@@ -225,6 +225,21 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
       ⚠ <strong style="color:var(--text)">Tax note:</strong> 401(k) projections show pre-tax growth. Withdrawals will be taxed as ordinary income. Roth accounts grow and withdraw tax-free. Taxable brokerage subject to capital gains. Numbers not adjusted for tax impact.
     </div>
 
+    <!-- INFLATION RATE -->
+    <div style="font-family:var(--mono);font-size:.68rem;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;margin-bottom:12px;margin-top:4px">Inflation Assumption</div>
+    <div class="settings-grid" style="margin-bottom:20px">
+      <div class="inp-group">
+        <label class="inp-label" style="color:var(--blue)">Annual Inflation Rate</label>
+        <input class="inp-field" id="inpInflation" type="number" value="2.9" step="0.1" min="0" max="15">
+        <span class="inp-hint">Default 2.9% — Fed long-run target ~2.0–3.0%</span>
+      </div>
+      <div class="inp-group">
+        <label class="inp-label" style="color:var(--green)">Safe Withdrawal Rate</label>
+        <input class="inp-field" id="inpSWR" type="number" value="4.0" step="0.1" min="1" max="10">
+        <span class="inp-hint">Classic "4% rule" — annual withdrawal as % of portfolio</span>
+      </div>
+    </div>
+
     <button class="run-btn" onclick="applySettings()">▶ Run Simulation</button>
     <div class="settings-note">
       Numbers stay in your browser — nothing is saved or sent anywhere. Change any field and hit Run to re-simulate all 10,000 paths instantly.
@@ -240,6 +255,7 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
     <div class="b-item"><strong>Return μ:</strong> <span id="bRet">—</span></div>
     <div class="b-item"><strong>Volatility σ:</strong> <span id="bVol">—</span></div>
     <div class="b-item"><strong>Contribution:</strong> <span id="bContrib">$7,500/yr</span></div>
+    <div class="b-item"><strong>Inflation:</strong> <span id="bInflation">2.9%/yr</span></div>
     <div class="b-note" id="bNote">—</div>
   </div>
 
@@ -251,6 +267,59 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
     <div class="stat"><div class="s-lbl">25th %ile</div><div class="s-val" id="sP25" style="color:var(--blue)">—</div></div>
     <div class="stat"><div class="s-lbl">75th %ile</div><div class="s-val" id="sP75">—</div></div>
     <div class="stat"><div class="s-lbl">90th %ile</div><div class="s-val" id="sP90" style="color:var(--green)">—</div></div>
+  </div>
+
+  <!-- INFLATION-ADJUSTED SECTION -->
+  <p class="sec-hdr" id="realHdr">Inflation-Adjusted (Real) Values · Today's Dollars</p>
+  <div class="stats" style="margin-bottom:10px">
+    <div class="stat"><div class="s-lbl">Real Median</div><div class="s-val" id="rP50" style="color:var(--blue)">—</div></div>
+    <div class="stat"><div class="s-lbl">Real 10th %ile</div><div class="s-val" id="rP10" style="color:var(--red)">—</div></div>
+    <div class="stat"><div class="s-lbl">Real 25th %ile</div><div class="s-val" id="rP25">—</div></div>
+    <div class="stat"><div class="s-lbl">Real 75th %ile</div><div class="s-val" id="rP75">—</div></div>
+    <div class="stat"><div class="s-lbl">Real 90th %ile</div><div class="s-val" id="rP90" style="color:var(--green)">—</div></div>
+    <div class="stat"><div class="s-lbl">Inflation Factor</div><div class="s-val" id="rFactor" style="color:var(--muted)">—</div></div>
+  </div>
+  <!-- WITHDRAWAL CAPACITY -->
+  <div style="background:var(--surface);border:1px solid var(--border);border-radius:11px;padding:20px 22px;margin-bottom:24px">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:12px;margin-bottom:16px">
+      <div>
+        <div style="font-family:var(--serif);font-size:1rem;margin-bottom:3px">Annual Withdrawal Capacity</div>
+        <div style="font-family:var(--mono);font-size:.72rem;color:var(--muted)" id="swrSubLabel">Based on 4.0% safe withdrawal rate</div>
+      </div>
+      <div style="font-size:.68rem;color:var(--muted);font-family:var(--mono);background:var(--surface2);padding:6px 12px;border-radius:6px;border:1px solid var(--border)">
+        Nominal &amp; inflation-adjusted (today's $)
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:1px;background:var(--border);border-radius:8px;overflow:hidden">
+      <div style="background:var(--surface2);padding:16px 18px">
+        <div style="font-size:.65rem;color:var(--muted);font-family:var(--mono);text-transform:uppercase;letter-spacing:.1em;margin-bottom:6px">Median Nominal</div>
+        <div style="font-family:var(--mono);font-size:1.15rem;font-weight:500;color:var(--gold)" id="wNomMed">—</div>
+        <div style="font-size:.62rem;color:var(--muted);margin-top:4px">per year</div>
+      </div>
+      <div style="background:var(--surface2);padding:16px 18px">
+        <div style="font-size:.65rem;color:var(--muted);font-family:var(--mono);text-transform:uppercase;letter-spacing:.1em;margin-bottom:6px">Median Real</div>
+        <div style="font-family:var(--mono);font-size:1.15rem;font-weight:500;color:var(--blue)" id="wRealMed">—</div>
+        <div style="font-size:.62rem;color:var(--muted);margin-top:4px">per year · today's $</div>
+      </div>
+      <div style="background:var(--surface2);padding:16px 18px">
+        <div style="font-size:.65rem;color:var(--muted);font-family:var(--mono);text-transform:uppercase;letter-spacing:.1em;margin-bottom:6px">10th %ile Real</div>
+        <div style="font-family:var(--mono);font-size:1.15rem;font-weight:500;color:var(--red)" id="wReal10">—</div>
+        <div style="font-size:.62rem;color:var(--muted);margin-top:4px">per year · today's $</div>
+      </div>
+      <div style="background:var(--surface2);padding:16px 18px">
+        <div style="font-size:.65rem;color:var(--muted);font-family:var(--mono);text-transform:uppercase;letter-spacing:.1em;margin-bottom:6px">90th %ile Real</div>
+        <div style="font-family:var(--mono);font-size:1.15rem;font-weight:500;color:var(--green)" id="wReal90">—</div>
+        <div style="font-size:.62rem;color:var(--muted);margin-top:4px">per year · today's $</div>
+      </div>
+      <div style="background:var(--surface2);padding:16px 18px">
+        <div style="font-size:.65rem;color:var(--muted);font-family:var(--mono);text-transform:uppercase;letter-spacing:.1em;margin-bottom:6px">Monthly Real</div>
+        <div style="font-family:var(--mono);font-size:1.15rem;font-weight:500;color:var(--purple)" id="wRealMonth">—</div>
+        <div style="font-size:.62rem;color:var(--muted);margin-top:4px">per month · today's $</div>
+      </div>
+    </div>
+    <div style="margin-top:12px;padding:10px 14px;background:var(--surface2);border-radius:6px;border-left:3px solid var(--blue);font-size:.7rem;color:var(--muted);font-family:var(--sans);line-height:1.55">
+      ℹ The 4% rule (Bengen 1994) suggests withdrawing 4% of your portfolio in year 1, then adjusting for inflation each year — historically lasting 30+ years. Real values use your inflation assumption to show purchasing power in today's dollars. Not financial advice.
+    </div>
   </div>
 
   <p class="sec-hdr" id="probHdr">Probability of Reaching Target by End Year</p>
@@ -339,6 +408,7 @@ const HISTORY = [
 
 // ── Mutable settings ──────────────────────────────────────────────────────────
 let N = 10000, START = 8492.71, CONTRIB = 7500, START_YEAR = 2026, YEARS = 25;
+let INFLATION = 0.029, SWR = 0.04;
 let YRS = Array.from({length: YEARS}, (_, i) => START_YEAR + i);
 let ALL = [], MEDIANS = [], activeIdx = 1;
 let fanInst = null, histInst = null, cmpInst = null;
@@ -366,14 +436,17 @@ function applySettings() {
   const k401    = parseFloat(document.getElementById('inp401k').value)    || 0;
   const taxable = parseFloat(document.getElementById('inpTaxable').value) || 0;
   const other   = parseFloat(document.getElementById('inpOther').value)   || 0;
-  CONTRIB = roth + k401 + taxable + other;
-  YEARS   = Math.max(2, endYr - START_YEAR + 1);
+  CONTRIB   = roth + k401 + taxable + other;
+  INFLATION = (parseFloat(document.getElementById('inpInflation').value) || 2.9) / 100;
+  SWR       = (parseFloat(document.getElementById('inpSWR').value) || 4.0) / 100;
+  YEARS     = Math.max(2, endYr - START_YEAR + 1);
   YRS     = Array.from({length: YEARS}, (_, i) => START_YEAR + i);
 
   // FIX: all template literals now use backticks
   document.getElementById('hdrVal').textContent  = '$' + START.toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2});
   document.getElementById('hdrSub').textContent  = `$${CONTRIB.toLocaleString()}/yr · Monte Carlo 10,000 paths · ${START_YEAR}–${endYr} · Starting $${START.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})}`;
   document.getElementById('bContrib').textContent = '$' + CONTRIB.toLocaleString() + '/yr';
+  document.getElementById('bInflation').textContent = (INFLATION * 100).toFixed(1) + '%/yr';
   document.getElementById('outcomeHdr').textContent = `Projected Outcomes by ${endYr}`;
   document.getElementById('probHdr').textContent    = `Probability of Reaching Target by ${endYr}`;
   document.getElementById('sumStart').textContent   = '$' + START.toLocaleString('en-US', {minimumFractionDigits:2});
@@ -536,6 +609,30 @@ function render(idx) {
   document.getElementById('sP75').textContent  = fmt(p75);
   document.getElementById('sP90').textContent  = fmt(p90);
 
+  // ── Inflation-adjusted real values ──────────────────────────────────────────
+  const inflFactor = Math.pow(1 + INFLATION, YEARS);
+  const toReal = v => v / inflFactor;
+  const rp10 = toReal(p10), rp25 = toReal(p25), rp50 = toReal(p50);
+  const rp75 = toReal(p75), rp90 = toReal(p90);
+
+  document.getElementById('rP50').textContent    = fmt(rp50);
+  document.getElementById('rP10').textContent    = fmt(rp10);
+  document.getElementById('rP25').textContent    = fmt(rp25);
+  document.getElementById('rP75').textContent    = fmt(rp75);
+  document.getElementById('rP90').textContent    = fmt(rp90);
+  document.getElementById('rFactor').textContent = inflFactor.toFixed(2) + '×';
+  document.getElementById('realHdr').textContent =
+    `Inflation-Adjusted (Real) Values · Today's Dollars · ${(INFLATION*100).toFixed(1)}%/yr`;
+
+  // ── Withdrawal capacity ──────────────────────────────────────────────────────
+  const swrPct = (SWR * 100).toFixed(1);
+  document.getElementById('swrSubLabel').textContent = `Based on ${swrPct}% safe withdrawal rate`;
+  document.getElementById('wNomMed').textContent   = fmt(p50 * SWR) + '/yr';
+  document.getElementById('wRealMed').textContent  = fmt(rp50 * SWR) + '/yr';
+  document.getElementById('wReal10').textContent   = fmt(rp10 * SWR) + '/yr';
+  document.getElementById('wReal90').textContent   = fmt(rp90 * SWR) + '/yr';
+  document.getElementById('wRealMonth').textContent= fmt(rp50 * SWR / 12) + '/mo';
+
   // Probability cards
   const TGTS = [{l:'$100k',v:1e5},{l:'$250k',v:2.5e5},{l:'$500k',v:5e5},{l:'$1M',v:1e6},{l:'$2M',v:2e6},{l:'$3M',v:3e6},{l:'$5M',v:5e6},{l:'$10M',v:1e7}];
   const COLS  = ['#7eeac9','#6eb5ff','#e8c97e','#c878ff','#ff8a7e','#f0a060','#a78bfa','#38bdf8'];
@@ -631,6 +728,7 @@ function render(idx) {
 }
 
 // ── Init ──────────────────────────────────────────────────────────────────────
+document.getElementById('bInflation').textContent = (INFLATION * 100).toFixed(1) + '%/yr';
 rebuildAndRender();
 </script>
 
