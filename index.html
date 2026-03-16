@@ -537,8 +537,8 @@ function render(idx) {
   document.getElementById('sP90').textContent  = fmt(p90);
 
   // Probability cards
-  const TGTS = [{l:'$100k',v:1e5},{l:'$250k',v:2.5e5},{l:'$500k',v:5e5},{l:'$1M',v:1e6}];
-  const COLS  = ['#7eeac9','#6eb5ff','#e8c97e','#c878ff'];
+  const TGTS = [{l:'$100k',v:1e5},{l:'$250k',v:2.5e5},{l:'$500k',v:5e5},{l:'$1M',v:1e6},{l:'$2M',v:2e6},{l:'$3M',v:3e6},{l:'$5M',v:5e6},{l:'$10M',v:1e7}];
+  const COLS  = ['#7eeac9','#6eb5ff','#e8c97e','#c878ff','#ff8a7e','#f0a060','#a78bfa','#38bdf8'];
   const pg    = document.getElementById('probGrid');
   pg.innerHTML = '';
   TGTS.forEach((t, i) => {
