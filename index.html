@@ -117,37 +117,20 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
 .hdr,.scn-bar,.banner,.stats{animation:fadeUp .45s ease both}
 
 /* FLOATING DONATE */
-.donate-fab{
-  position:fixed;bottom:28px;right:28px;z-index:999;
-  display:flex;flex-direction:column;align-items:flex-end;gap:10px;
-}
-.donate-bubble{
-  background:var(--surface);border:1px solid var(--border);
-  border-radius:12px;padding:12px 16px;
-  font-family:var(--sans);font-size:.75rem;color:var(--muted);
-  max-width:210px;text-align:center;line-height:1.5;
-  box-shadow:0 4px 24px rgba(0,0,0,.4);
-  opacity:0;transform:translateY(8px) scale(.97);
-  transition:opacity .25s ease,transform .25s ease;
-  pointer-events:none;
-}
-.donate-bubble.show{opacity:1;transform:translateY(0) scale(1);pointer-events:auto}
-.donate-bubble strong{color:var(--text)}
-.donate-bubble .cashtag{color:#00d64f;font-family:var(--mono);font-weight:500;font-size:.85rem}
-.donate-btn{
-  display:flex;align-items:center;gap:9px;
-  background:#00d64f;color:#0c0f14;
-  border:none;border-radius:50px;
-  padding:13px 20px;
-  font-family:var(--mono);font-size:.85rem;font-weight:500;
-  cursor:pointer;
-  box-shadow:0 4px 20px rgba(0,214,79,.35);
-  transition:transform .18s ease,box-shadow .18s ease,background .18s ease;
-  white-space:nowrap;
-}
-.donate-btn:hover{background:#1adf64;transform:translateY(-2px);box-shadow:0 6px 28px rgba(0,214,79,.5)}
-.donate-btn:active{transform:translateY(0)}
-.donate-btn .cash-icon{font-size:1.1rem;line-height:1}
+.donate-fab{position:fixed;bottom:28px;right:28px;z-index:999;display:flex;flex-direction:column;align-items:flex-end;gap:8px;}
+.donate-panel{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:16px 18px;width:234px;box-shadow:0 8px 32px rgba(0,0,0,.5);opacity:0;transform:translateY(10px) scale(.97);transition:opacity .25s ease,transform .25s ease;pointer-events:none;}
+.donate-panel.show{opacity:1;transform:translateY(0) scale(1);pointer-events:auto;}
+.donate-panel p{margin-bottom:12px;color:var(--text);font-family:var(--sans);font-size:.8rem;line-height:1.55;}
+.donate-links{display:flex;flex-direction:column;gap:7px;}
+.donate-link{display:flex;align-items:center;gap:10px;padding:9px 13px;border-radius:8px;font-family:var(--mono);font-size:.78rem;font-weight:500;text-decoration:none;transition:transform .15s,opacity .15s;white-space:nowrap;}
+.donate-link:hover{transform:translateX(-2px);opacity:.85;}
+.donate-link.paypal{background:#003087;color:#fff;}
+.donate-link.cashapp{background:#00d64f;color:#0c0f14;}
+.donate-link.bmac{background:#ffdd00;color:#0c0f14;}
+.donate-link .d-icon{font-size:1rem;width:18px;text-align:center;flex-shrink:0;}
+.donate-toggle{display:flex;align-items:center;gap:9px;background:var(--gold);color:#0c0f14;border:none;border-radius:50px;padding:13px 20px;font-family:var(--mono);font-size:.85rem;font-weight:500;cursor:pointer;box-shadow:0 4px 20px rgba(232,201,126,.3);transition:transform .18s,box-shadow .18s,background .18s;white-space:nowrap;}
+.donate-toggle:hover{background:#f0d898;transform:translateY(-2px);box-shadow:0 6px 28px rgba(232,201,126,.45);}
+.donate-toggle:active{transform:translateY(0);}
 </style>
 </head>
 <body>
@@ -651,19 +634,36 @@ function render(idx) {
 rebuildAndRender();
 </script>
 
-<!-- FLOATING CASH APP DONATE -->
+<!-- FLOATING DONATE FAB -->
 <div class="donate-fab" id="donateFab">
-  <div class="donate-bubble" id="donateBubble">
-    If you like this tool, please donate to help me keep it free!<br><br>
-    <strong>Cash App:</strong> <span class="cashtag">$BenjamynmWilson</span>
+  <div class="donate-panel" id="donatePanel">
+    <p>If you like this tool, please donate to help me keep it free! ☕</p>
+    <div class="donate-links">
+      <a href="https://paypal.me/BenjamynWilson" target="_blank" rel="noopener" class="donate-link paypal">
+        <span class="d-icon">🅿</span> PayPal.me
+      </a>
+      <a href="https://cash.app/$BenjamynmWilson" target="_blank" rel="noopener" class="donate-link cashapp">
+        <span class="d-icon">$</span> Cash App
+      </a>
+      <a href="https://buymeacoffee.com/datainfamous40" target="_blank" rel="noopener" class="donate-link bmac">
+        <span class="d-icon">☕</span> Buy Me a Coffee
+      </a>
+    </div>
   </div>
-  <a href="https://cash.app/$BenjamynmWilson" target="_blank" rel="noopener noreferrer"
-     class="donate-btn"
-     onmouseenter="document.getElementById('donateBubble').classList.add('show')"
-     onmouseleave="document.getElementById('donateBubble').classList.remove('show')">
-    <span class="cash-icon">$</span> Donate via Cash App
-  </a>
+  <button class="donate-toggle" id="donateToggle" onclick="toggleDonate()">
+    ❤ Support this tool
+  </button>
 </div>
+<script>
+function toggleDonate(){
+  const p = document.getElementById('donatePanel');
+  p.classList.toggle('show');
+}
+document.addEventListener('click', function(e){
+  const fab = document.getElementById('donateFab');
+  if(!fab.contains(e.target)) document.getElementById('donatePanel').classList.remove('show');
+});
+</script>
 
 </body>
 </html>
