@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -21,108 +20,118 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
              radial-gradient(ellipse 55% 40% at 85% 85%,rgba(110,181,255,.05) 0%,transparent 60%)}
 .wrap{max-width:1160px;margin:0 auto;padding:40px 22px 80px;position:relative;z-index:1}
 
-.hdr{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:40px;padding-bottom:22px;border-bottom:1px solid var(–border);gap:16px;flex-wrap:wrap}
-.hdr h1{font-family:var(–serif);font-size:clamp(1.8rem,4vw,2.8rem);line-height:1.1}
-.hdr h1 em{font-style:italic;color:var(–gold)}
-.hdr-sub{margin-top:7px;font-size:.8rem;color:var(–muted);font-family:var(–mono);letter-spacing:.04em}
+/* HEADER */
+.hdr{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:40px;padding-bottom:22px;border-bottom:1px solid var(--border);gap:16px;flex-wrap:wrap}
+.hdr h1{font-family:var(--serif);font-size:clamp(1.8rem,4vw,2.8rem);line-height:1.1}
+.hdr h1 em{font-style:italic;color:var(--gold)}
+.hdr-sub{margin-top:7px;font-size:.8rem;color:var(--muted);font-family:var(--mono);letter-spacing:.04em}
 .hdr-right{text-align:right}
-.hdr-val{font-family:var(–mono);font-size:clamp(1.3rem,2.5vw,1.8rem);color:var(–gold)}
-.hdr-lbl{font-size:.72rem;color:var(–muted);text-transform:uppercase;letter-spacing:.1em;margin-top:3px}
+.hdr-val{font-family:var(--mono);font-size:clamp(1.3rem,2.5vw,1.8rem);color:var(--gold)}
+.hdr-lbl{font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;margin-top:3px}
 
-.scn-bar{display:flex;gap:0;margin-bottom:24px;border:1px solid var(–border);border-radius:10px;overflow:hidden}
-.scn-btn{flex:1;padding:14px 10px;background:var(–surface);border:none;color:var(–muted);font-family:var(–mono);font-size:.82rem;cursor:pointer;transition:all .2s;border-right:1px solid var(–border);display:flex;flex-direction:column;align-items:center;gap:3px}
+/* SCENARIO TABS */
+.scn-bar{display:flex;gap:0;margin-bottom:24px;border:1px solid var(--border);border-radius:10px;overflow:hidden}
+.scn-btn{flex:1;padding:14px 10px;background:var(--surface);border:none;color:var(--muted);font-family:var(--mono);font-size:.82rem;cursor:pointer;transition:all .2s;border-right:1px solid var(--border);display:flex;flex-direction:column;align-items:center;gap:3px}
 .scn-btn:last-child{border-right:none}
-.scn-btn:hover{background:var(–surface2);color:var(–text)}
-.scn-btn.active{background:var(–surface2);color:var(–text)}
+.scn-btn:hover{background:var(--surface2);color:var(--text)}
+.scn-btn.active{background:var(--surface2);color:var(--text)}
 .scn-name{font-size:.72rem;letter-spacing:.06em;text-transform:uppercase}
 .scn-ret{font-size:1.1rem;font-weight:500}
-.scn-src{font-size:.62rem;color:var(–muted);text-align:center}
+.scn-src{font-size:.62rem;color:var(--muted);text-align:center}
 .scn-dot{width:7px;height:7px;border-radius:50%;margin-top:2px;transition:transform .2s}
 .scn-btn.active .scn-dot{transform:scale(1.4)}
 
-.banner{background:var(–surface);border:1px solid var(–border);border-radius:9px;padding:13px 18px;margin-bottom:24px;display:flex;gap:18px;flex-wrap:wrap;font-size:.78rem;font-family:var(–mono);align-items:center}
-.b-item{color:var(–muted)}
-.b-item strong{color:var(–text);font-weight:500}
-.b-note{margin-left:auto;font-size:.68rem;color:var(–muted);font-style:italic;font-family:var(–sans);max-width:340px;text-align:right}
+/* BANNER */
+.banner{background:var(--surface);border:1px solid var(--border);border-radius:9px;padding:13px 18px;margin-bottom:24px;display:flex;gap:18px;flex-wrap:wrap;font-size:.78rem;font-family:var(--mono);align-items:center}
+.b-item{color:var(--muted)}
+.b-item strong{color:var(--text);font-weight:500}
+.b-note{margin-left:auto;font-size:.68rem;color:var(--muted);font-style:italic;font-family:var(--sans);max-width:340px;text-align:right}
 
-.sec-hdr{font-family:var(–serif);font-size:1rem;color:var(–muted);margin-bottom:14px;display:flex;align-items:center;gap:12px}
-.sec-hdr::after{content:’’;flex:1;height:1px;background:var(–border)}
-.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(155px,1fr));gap:1px;background:var(–border);border:1px solid var(–border);border-radius:11px;overflow:hidden;margin-bottom:24px}
-.stat{background:var(–surface);padding:18px 20px;transition:background .15s}
-.stat:hover{background:var(–surface2)}
-.s-lbl{font-size:.68rem;color:var(–muted);text-transform:uppercase;letter-spacing:.1em;font-family:var(–mono);margin-bottom:7px}
-.s-val{font-family:var(–mono);font-size:1.2rem;font-weight:500}
+/* STATS */
+.sec-hdr{font-family:var(--serif);font-size:1rem;color:var(--muted);margin-bottom:14px;display:flex;align-items:center;gap:12px}
+.sec-hdr::after{content:'';flex:1;height:1px;background:var(--border)}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(155px,1fr));gap:1px;background:var(--border);border:1px solid var(--border);border-radius:11px;overflow:hidden;margin-bottom:24px}
+.stat{background:var(--surface);padding:18px 20px;transition:background .15s}
+.stat:hover{background:var(--surface2)}
+.s-lbl{font-size:.68rem;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;font-family:var(--mono);margin-bottom:7px}
+.s-val{font-family:var(--mono);font-size:1.2rem;font-weight:500}
 
+/* PROB */
 .prob-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px;margin-bottom:24px}
-.prob-card{background:var(–surface);border:1px solid var(–border);border-radius:9px;padding:15px 17px;position:relative;overflow:hidden}
-.prob-card::after{content:’’;position:absolute;bottom:0;left:0;height:3px;width:var(–w);background:var(–c);border-radius:0 2px 0 0;transition:width .9s cubic-bezier(.16,1,.3,1)}
-.p-tgt{font-family:var(–mono);font-size:.88rem;color:var(–muted);margin-bottom:4px}
-.p-pct{font-family:var(–mono);font-size:1.65rem;font-weight:500}
+.prob-card{background:var(--surface);border:1px solid var(--border);border-radius:9px;padding:15px 17px;position:relative;overflow:hidden}
+.prob-card::after{content:'';position:absolute;bottom:0;left:0;height:3px;width:var(--w);background:var(--c);border-radius:0 2px 0 0;transition:width .9s cubic-bezier(.16,1,.3,1)}
+.p-tgt{font-family:var(--mono);font-size:.88rem;color:var(--muted);margin-bottom:4px}
+.p-pct{font-family:var(--mono);font-size:1.65rem;font-weight:500}
 .p-pct span{font-size:.85rem;opacity:.6}
 
+/* PANELS */
 .full{margin-bottom:18px}
 .two{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:18px}
 @media(max-width:720px){.two{grid-template-columns:1fr}.hdr{flex-direction:column;align-items:flex-start}}
-.panel{background:var(–surface);border:1px solid var(–border);border-radius:11px;padding:22px}
-.p-title{font-family:var(–serif);font-size:1rem;margin-bottom:3px}
-.p-sub{font-size:.72rem;color:var(–muted);font-family:var(–mono);margin-bottom:18px}
+.panel{background:var(--surface);border:1px solid var(--border);border-radius:11px;padding:22px}
+.p-title{font-family:var(--serif);font-size:1rem;margin-bottom:3px}
+.p-sub{font-size:.72rem;color:var(--muted);font-family:var(--mono);margin-bottom:18px}
 
+/* HISTORY */
 .hist-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(95px,1fr));gap:8px}
-.yr-card{background:var(–surface2);border-radius:7px;padding:10px 12px;text-align:center}
-.yr-lbl{font-size:.65rem;color:var(–muted);font-family:var(–mono);margin-bottom:3px}
-.yr-val{font-family:var(–mono);font-size:.95rem;font-weight:500}
-.pos{color:var(–green)}
-.neg{color:var(–red)}
+.yr-card{background:var(--surface2);border-radius:7px;padding:10px 12px;text-align:center}
+.yr-lbl{font-size:.65rem;color:var(--muted);font-family:var(--mono);margin-bottom:3px}
+.yr-val{font-family:var(--mono);font-size:.95rem;font-weight:500}
+.pos{color:var(--green)}
+.neg{color:var(--red)}
 
-.c-row{display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(–border);font-size:.83rem}
+/* CONTRIB */
+.c-row{display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--border);font-size:.83rem}
 .c-row:last-of-type{border-bottom:none}
-.c-lbl{color:var(–muted)}
-.c-val{font-family:var(–mono);font-weight:500}
-.c-total{margin-top:10px;padding-top:10px;border-top:2px solid var(–border);display:flex;justify-content:space-between}
-.c-total .c-val{color:var(–gold);font-size:1.05rem}
+.c-lbl{color:var(--muted)}
+.c-val{font-family:var(--mono);font-weight:500}
+.c-total{margin-top:10px;padding-top:10px;border-top:2px solid var(--border);display:flex;justify-content:space-between}
+.c-total .c-val{color:var(--gold);font-size:1.05rem}
 
-.cmp-tbl{width:100%;border-collapse:collapse;font-family:var(–mono);font-size:.8rem;margin-top:16px}
-.cmp-tbl th{text-align:left;padding:8px 10px;color:var(–muted);font-size:.65rem;text-transform:uppercase;letter-spacing:.08em;border-bottom:1px solid var(–border)}
+/* COMPARE TABLE */
+.cmp-tbl{width:100%;border-collapse:collapse;font-family:var(--mono);font-size:.8rem;margin-top:16px}
+.cmp-tbl th{text-align:left;padding:8px 10px;color:var(--muted);font-size:.65rem;text-transform:uppercase;letter-spacing:.08em;border-bottom:1px solid var(--border)}
 .cmp-tbl td{padding:9px 10px;border-bottom:1px solid rgba(35,43,56,.5)}
 .cmp-tbl tr:last-child td{border-bottom:none}
 .cmp-tbl tr:hover td{background:rgba(255,255,255,.02)}
 
-.settings-toggle{display:flex;align-items:center;gap:14px;cursor:pointer;background:var(–surface2);border:2px solid var(–gold);border-radius:9px;padding:16px 22px;margin-bottom:24px;width:100%;font-family:var(–mono);font-size:.9rem;color:var(–gold);transition:all .2s}
-.settings-toggle:hover{background:var(–surface);border-color:var(–gold);box-shadow:0 0 20px rgba(232,201,126,0.15)}
+/* SETTINGS PANEL */
+.settings-toggle{display:flex;align-items:center;gap:14px;cursor:pointer;background:var(--surface2);border:2px solid var(--gold);border-radius:9px;padding:16px 22px;margin-bottom:24px;width:100%;font-family:var(--mono);font-size:.9rem;color:var(--gold);transition:all .2s}
+.settings-toggle:hover{background:var(--surface);border-color:var(--gold);box-shadow:0 0 20px rgba(232,201,126,0.15)}
 .settings-toggle .gear{font-size:1.4rem}
-.settings-toggle .arrow{margin-left:auto;transition:transform .3s;font-size:1rem;color:var(–muted)}
+.settings-toggle .arrow{margin-left:auto;transition:transform .3s;font-size:1rem;color:var(--muted)}
 .settings-toggle.open .arrow{transform:rotate(180deg)}
-.settings-panel{background:var(–surface);border:1px solid var(–border);border-radius:9px;padding:22px;margin-bottom:24px;display:none}
+.settings-panel{background:var(--surface);border:1px solid var(--border);border-radius:9px;padding:22px;margin-bottom:24px;display:none}
 .settings-panel.open{display:block}
 .settings-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-bottom:20px}
 .inp-group{display:flex;flex-direction:column;gap:6px}
-.inp-label{font-family:var(–mono);font-size:.68rem;color:var(–muted);text-transform:uppercase;letter-spacing:.1em}
-.inp-field{background:var(–surface2);border:1px solid var(–border);border-radius:6px;padding:10px 14px;font-family:var(–mono);font-size:.95rem;color:var(–text);width:100%;outline:none;transition:border-color .2s}
-.inp-field:focus{border-color:var(–gold)}
-.inp-hint{font-size:.65rem;color:var(–muted);font-family:var(–mono)}
-.run-btn{background:var(–gold);color:#0c0f14;border:none;border-radius:6px;padding:12px 28px;font-family:var(–mono);font-size:.88rem;font-weight:500;cursor:pointer;transition:all .2s;letter-spacing:.04em}
+.inp-label{font-family:var(--mono);font-size:.68rem;color:var(--muted);text-transform:uppercase;letter-spacing:.1em}
+.inp-field{background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:10px 14px;font-family:var(--mono);font-size:.95rem;color:var(--text);width:100%;outline:none;transition:border-color .2s}
+.inp-field:focus{border-color:var(--gold)}
+.inp-hint{font-size:.65rem;color:var(--muted);font-family:var(--mono)}
+.run-btn{background:var(--gold);color:#0c0f14;border:none;border-radius:6px;padding:12px 28px;font-family:var(--mono);font-size:.88rem;font-weight:500;cursor:pointer;transition:all .2s;letter-spacing:.04em}
 .run-btn:hover{background:#f0d898;transform:translateY(-1px)}
-.settings-note{font-size:.72rem;color:var(–muted);font-family:var(–sans);margin-top:12px;line-height:1.5;padding-top:12px;border-top:1px solid var(–border)}
+.settings-note{font-size:.72rem;color:var(--muted);font-family:var(--sans);margin-top:12px;line-height:1.5;padding-top:12px;border-top:1px solid var(--border)}
 
 @keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
 .hdr,.scn-bar,.banner,.stats{animation:fadeUp .45s ease both}
 
+/* FLOATING DONATE */
 .donate-fab{position:fixed;bottom:28px;right:28px;z-index:999;display:flex;flex-direction:column;align-items:flex-end;gap:8px;}
-.donate-panel{background:var(–surface);border:1px solid var(–border);border-radius:14px;padding:16px 18px;width:234px;box-shadow:0 8px 32px rgba(0,0,0,.5);opacity:0;transform:translateY(10px) scale(.97);transition:opacity .25s ease,transform .25s ease;pointer-events:none;}
+.donate-panel{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:16px 18px;width:234px;box-shadow:0 8px 32px rgba(0,0,0,.5);opacity:0;transform:translateY(10px) scale(.97);transition:opacity .25s ease,transform .25s ease;pointer-events:none;}
 .donate-panel.show{opacity:1;transform:translateY(0) scale(1);pointer-events:auto;}
-.donate-panel p{margin-bottom:12px;color:var(–text);font-family:var(–sans);font-size:.8rem;line-height:1.55;}
+.donate-panel p{margin-bottom:12px;color:var(--text);font-family:var(--sans);font-size:.8rem;line-height:1.55;}
 .donate-links{display:flex;flex-direction:column;gap:7px;}
-.donate-link{display:flex;align-items:center;gap:10px;padding:9px 13px;border-radius:8px;font-family:var(–mono);font-size:.78rem;font-weight:500;text-decoration:none;transition:transform .15s,opacity .15s;white-space:nowrap;}
+.donate-link{display:flex;align-items:center;gap:10px;padding:9px 13px;border-radius:8px;font-family:var(--mono);font-size:.78rem;font-weight:500;text-decoration:none;transition:transform .15s,opacity .15s;white-space:nowrap;}
 .donate-link:hover{transform:translateX(-2px);opacity:.85;}
 .donate-link.paypal{background:#003087;color:#fff;}
 .donate-link.cashapp{background:#00d64f;color:#0c0f14;}
 .donate-link.bmac{background:#ffdd00;color:#0c0f14;}
 .donate-link .d-icon{font-size:1rem;width:18px;text-align:center;flex-shrink:0;}
-.donate-toggle{display:flex;align-items:center;gap:9px;background:var(–gold);color:#0c0f14;border:none;border-radius:50px;padding:13px 20px;font-family:var(–mono);font-size:.85rem;font-weight:500;cursor:pointer;box-shadow:0 4px 20px rgba(232,201,126,.3);transition:transform .18s,box-shadow .18s,background .18s;white-space:nowrap;}
+.donate-toggle{display:flex;align-items:center;gap:9px;background:var(--gold);color:#0c0f14;border:none;border-radius:50px;padding:13px 20px;font-family:var(--mono);font-size:.85rem;font-weight:500;cursor:pointer;box-shadow:0 4px 20px rgba(232,201,126,.3);transition:transform .18s,box-shadow .18s,background .18s;white-space:nowrap;}
 .donate-toggle:hover{background:#f0d898;transform:translateY(-2px);box-shadow:0 6px 28px rgba(232,201,126,.45);}
 .donate-toggle:active{transform:translateY(0);}
 </style>
-
 </head>
 <body>
 <div class="wrap">
@@ -138,6 +147,7 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
     </div>
   </header>
 
+  <!-- 2026 LIMITS BANNER -->
   <div style="background:var(--surface);border:1px solid var(--border);border-radius:9px;padding:12px 18px;margin-bottom:24px;font-family:var(--mono);font-size:.75rem;display:flex;gap:24px;flex-wrap:wrap;align-items:center">
     <span style="color:var(--muted);text-transform:uppercase;letter-spacing:.08em;font-size:.65rem">2026 Post-Tax Limits (IRS)</span>
     <span style="color:var(--gold)">Roth IRA <strong>$7,500</strong> <span style="color:var(--muted);font-size:.68rem">(under 50)</span></span>
@@ -150,6 +160,7 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
     </div>
   </div>
 
+  <!-- SETTINGS TOGGLE (FIX: moved outside the limits banner div) -->
   <button class="settings-toggle" id="settingsToggle" onclick="toggleSettings()">
     <span class="gear">⚙</span>
     <span>Customize your numbers</span>
@@ -157,7 +168,9 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
     <span class="arrow">▼</span>
   </button>
 
+  <!-- SETTINGS PANEL -->
   <div class="settings-panel" id="settingsPanel">
+    <!-- PORTFOLIO + TIMELINE -->
     <div style="font-family:var(--mono);font-size:.68rem;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;margin-bottom:12px">Portfolio &amp; Timeline</div>
     <div class="settings-grid" style="margin-bottom:20px">
       <div class="inp-group">
@@ -177,48 +190,51 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
       </div>
     </div>
 
-```
-<div style="font-family:var(--mono);font-size:.68rem;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;margin-bottom:12px">Annual Contributions by Account</div>
-<div class="settings-grid" style="margin-bottom:16px">
-  <div class="inp-group">
-    <label class="inp-label" style="color:var(--gold)">Roth IRA</label>
-    <input class="inp-field contrib-input" id="inpRoth" type="number" value="7500" step="100" oninput="updateTotal()">
-    <span class="inp-hint">2026 max: $7,500 (under 50) · $8,600 (50+)</span>
-  </div>
-  <div class="inp-group">
-    <label class="inp-label" style="color:var(--blue)">401(k) / Roth 401(k)</label>
-    <input class="inp-field contrib-input" id="inp401k" type="number" value="0" step="100" oninput="updateTotal()">
-    <span class="inp-hint">2026 max: $24,500 employee · Pre or post-tax</span>
-  </div>
-  <div class="inp-group">
-    <label class="inp-label" style="color:var(--green)">Taxable Brokerage</label>
-    <input class="inp-field contrib-input" id="inpTaxable" type="number" value="0" step="100" oninput="updateTotal()">
-    <span class="inp-hint">No limit · Capital gains tax applies on withdrawal</span>
-  </div>
-  <div class="inp-group">
-    <label class="inp-label" style="color:var(--purple)">Other (HSA, 403b, etc.)</label>
-    <input class="inp-field contrib-input" id="inpOther" type="number" value="0" step="100" oninput="updateTotal()">
-    <span class="inp-hint">Any additional tax-advantaged contributions</span>
-  </div>
-</div>
+    <!-- ANNUAL CONTRIBUTIONS BY ACCOUNT -->
+    <div style="font-family:var(--mono);font-size:.68rem;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;margin-bottom:12px">Annual Contributions by Account</div>
+    <div class="settings-grid" style="margin-bottom:16px">
+      <div class="inp-group">
+        <label class="inp-label" style="color:var(--gold)">Roth IRA</label>
+        <input class="inp-field contrib-input" id="inpRoth" type="number" value="7500" step="100" oninput="updateTotal()">
+        <span class="inp-hint">2026 max: $7,500 (under 50) · $8,600 (50+)</span>
+      </div>
+      <div class="inp-group">
+        <label class="inp-label" style="color:var(--blue)">401(k) / Roth 401(k)</label>
+        <input class="inp-field contrib-input" id="inp401k" type="number" value="0" step="100" oninput="updateTotal()">
+        <span class="inp-hint">2026 max: $24,500 employee · Pre or post-tax</span>
+      </div>
+      <div class="inp-group">
+        <label class="inp-label" style="color:var(--green)">Taxable Brokerage</label>
+        <input class="inp-field contrib-input" id="inpTaxable" type="number" value="0" step="100" oninput="updateTotal()">
+        <span class="inp-hint">No limit · Capital gains tax applies on withdrawal</span>
+      </div>
+      <div class="inp-group">
+        <label class="inp-label" style="color:var(--purple)">Other (HSA, 403b, etc.)</label>
+        <input class="inp-field contrib-input" id="inpOther" type="number" value="0" step="100" oninput="updateTotal()">
+        <span class="inp-hint">Any additional tax-advantaged contributions</span>
+      </div>
+    </div>
 
-<div style="background:var(--surface2);border:1px solid var(--border);border-radius:7px;padding:14px 18px;margin-bottom:20px;display:flex;justify-content:space-between;align-items:center">
-  <span style="font-family:var(--mono);font-size:.8rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em">Total Annual Contribution</span>
-  <span style="font-family:var(--mono);font-size:1.3rem;font-weight:500;color:var(--gold)" id="totalContribDisplay">$7,500</span>
-</div>
+    <!-- TOTAL -->
+    <div style="background:var(--surface2);border:1px solid var(--border);border-radius:7px;padding:14px 18px;margin-bottom:20px;display:flex;justify-content:space-between;align-items:center">
+      <span style="font-family:var(--mono);font-size:.8rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em">Total Annual Contribution</span>
+      <span style="font-family:var(--mono);font-size:1.3rem;font-weight:500;color:var(--gold)" id="totalContribDisplay">$7,500</span>
+    </div>
 
-<div style="font-size:.68rem;color:var(--muted);font-family:var(--sans);margin-bottom:16px;padding:10px 14px;background:var(--surface2);border-radius:6px;border-left:3px solid var(--red);line-height:1.6">
-  ⚠ <strong style="color:var(--text)">Tax note:</strong> 401(k) projections show pre-tax growth. Withdrawals will be taxed as ordinary income. Roth accounts grow and withdraw tax-free. Taxable brokerage subject to capital gains. Numbers not adjusted for tax impact.
-</div>
+    <div style="font-size:.68rem;color:var(--muted);font-family:var(--sans);margin-bottom:16px;padding:10px 14px;background:var(--surface2);border-radius:6px;border-left:3px solid var(--red);line-height:1.6">
+      ⚠ <strong style="color:var(--text)">Tax note:</strong> 401(k) projections show pre-tax growth. Withdrawals will be taxed as ordinary income. Roth accounts grow and withdraw tax-free. Taxable brokerage subject to capital gains. Numbers not adjusted for tax impact.
+    </div>
 
-<button class="run-btn" onclick="applySettings()">▶ Run Simulation</button>
-<div class="settings-note">Numbers stay in your browser — nothing is saved or sent anywhere. Change any field and hit Run to re-simulate all 10,000 paths instantly.</div>
-```
-
+    <button class="run-btn" onclick="applySettings()">▶ Run Simulation</button>
+    <div class="settings-note">
+      Numbers stay in your browser — nothing is saved or sent anywhere. Change any field and hit Run to re-simulate all 10,000 paths instantly.
+    </div>
   </div>
 
+  <!-- SCENARIO TABS -->
   <div class="scn-bar" id="scnBar"></div>
 
+  <!-- ACTIVE SCENARIO BANNER -->
   <div class="banner">
     <div class="b-item"><strong>Scenario:</strong> <span id="bScen">—</span></div>
     <div class="b-item"><strong>Return μ:</strong> <span id="bRet">—</span></div>
@@ -288,35 +304,337 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
     </div>
   </div>
 
-  <!-- FEEDBACK FORM -->
+</div><!-- /.wrap -->
 
-  <div class="panel" style="margin-top:20px">
-    <div class="p-title">Feedback &amp; Questions</div>
-    <div class="p-sub">Send a message directly to the developer</div>
-    <form action="https://formspree.io/f/xdawwaey" method="POST" id="feedbackForm">
-      <div class="settings-grid" style="margin-bottom:16px">
-        <div class="inp-group">
-          <label class="inp-label">Your Name</label>
-          <input class="inp-field" type="text" name="name" placeholder="Optional">
-        </div>
-        <div class="inp-group">
-          <label class="inp-label">Email</label>
-          <input class="inp-field" type="email" name="email" placeholder="Optional — for a reply">
-        </div>
-      </div>
-      <div class="inp-group" style="margin-bottom:16px">
-        <label class="inp-label">Message</label>
-        <textarea class="inp-field" name="message" rows="4" placeholder="Feature requests, questions, bug reports..." style="resize:vertical;min-height:100px"></textarea>
-      </div>
-      <button type="submit" class="run-btn" style="background:var(--blue);color:#0c0f14">Send Feedback</button>
-      <div id="formSuccess" style="display:none;margin-top:12px;font-family:var(--mono);font-size:.8rem;color:var(--green)">Message sent. Thank you!</div>
-    </form>
-  </div>
+<script>
+// ── Scenarios ────────────────────────────────────────────────────────────────
+const SCNS = [
+  {name:'Bear',      label:'BEAR', mu:.045, sigma:.17, color:'#ff8a7e', src:'Vanguard base case',    note:'Vanguard VCMM (Dec 2025): muted 4–5% annualized due to stretched large-cap tech valuations', bootstrap:false},
+  {name:'Base',      label:'BASE', mu:.058, sigma:.16, color:'#e8c97e', src:'Fidelity 20yr CMA',     note:'Fidelity 20-year capital markets assumption: 5.8% nominal US equity return (2025–2044 horizon)', bootstrap:false},
+  {name:'Bull',      label:'BULL', mu:.080, sigma:.15, color:'#7eeac9', src:'Historical 30yr avg',   note:'Long-run US total market historical average ~8%; consistent with Vanguard 30-year upper range of 6.4%', bootstrap:false},
+  {name:'Optimistic',label:'OPT',  mu:.100, sigma:.17, color:'#c878ff', src:'Top-decile forecast',   note:'Optimistic scenario: 10% annualized — above consensus but within historical possibility for a strong decade', bootstrap:false},
+  {name:'Bootstrap', label:'HIST', mu:null, sigma:null, color:'#f0a060', src:'S&P 500 1928–2025',   note:'Bootstrap resampling from 97 years of actual S&P 500 returns (1928–2025). Each path draws random historical years — no normal distribution assumed. Captures real fat tails and crash sequences.', bootstrap:true},
+];
 
-</div>
+// ── S&P 500 annual returns 1928–2025 (nominal, price return + dividends) ─────
+const SP500 = [
+  43.81,-8.30,53.99,-3.16,-47.07,-15.15,-28.48,52.95,57.35,-5.94,
+  46.74,41.89,-9.78,-11.59,44.02,19.03,30.45,-10.67,-12.43,20.34,
+  25.76,19.40,36.44,-8.19,52.62,31.56,6.56,-10.78,43.36,11.96,
+  0.47,26.64,-8.81,22.68,16.48,12.45,-9.97,23.80,11.06,-8.50,
+  4.01,14.31,18.98,-14.31,-25.90,37.00,23.84,-7.18,6.51,18.52,
+  32.42,-4.70,20.42,22.34,6.15,31.73,18.67,5.25,16.54,31.48,
+  -3.10,30.35,7.53,9.97,1.33,37.20,22.68,33.10,28.34,21.04,
+  -9.10,-11.85,-22.10,28.36,10.74,4.83,15.61,5.48,-36.55,25.94,
+  14.82,2.10,15.89,32.15,13.48,1.38,11.77,21.61,-4.38,31.49,
+  18.40,28.71,-18.11,26.29,25.02,16.80
+].map(r => r / 100);
+
+// ── Recent history for display ────────────────────────────────────────────────
+const HISTORY = [
+  {yr:'2016',r:11.96},{yr:'2017',r:21.83},{yr:'2018',r:-4.38},{yr:'2019',r:31.49},
+  {yr:'2020',r:18.40},{yr:'2021',r:28.71},{yr:'2022',r:-18.11},{yr:'2023',r:26.29},
+  {yr:'2024',r:25.02},{yr:'2025',r:16.80},
+];
+
+// ── Mutable settings ──────────────────────────────────────────────────────────
+let N = 10000, START = 8492.71, CONTRIB = 7500, START_YEAR = 2026, YEARS = 25;
+let YRS = Array.from({length: YEARS}, (_, i) => START_YEAR + i);
+let ALL = [], MEDIANS = [], activeIdx = 1;
+let fanInst = null, histInst = null, cmpInst = null;
+
+// ── Settings helpers ──────────────────────────────────────────────────────────
+function updateTotal() {
+  const roth    = parseFloat(document.getElementById('inpRoth').value)    || 0;
+  const k401    = parseFloat(document.getElementById('inp401k').value)    || 0;
+  const taxable = parseFloat(document.getElementById('inpTaxable').value) || 0;
+  const other   = parseFloat(document.getElementById('inpOther').value)   || 0;
+  const total   = roth + k401 + taxable + other;
+  document.getElementById('totalContribDisplay').textContent = '$' + total.toLocaleString('en-US', {minimumFractionDigits: 0});
+}
+
+function toggleSettings() {
+  document.getElementById('settingsToggle').classList.toggle('open');
+  document.getElementById('settingsPanel').classList.toggle('open');
+}
+
+function applySettings() {
+  START      = parseFloat(document.getElementById('inpStart').value)     || 8492.71;
+  START_YEAR = parseInt(document.getElementById('inpStartYear').value)   || 2026;
+  const endYr = parseInt(document.getElementById('inpEndYear').value)    || 2050;
+  const roth    = parseFloat(document.getElementById('inpRoth').value)    || 0;
+  const k401    = parseFloat(document.getElementById('inp401k').value)    || 0;
+  const taxable = parseFloat(document.getElementById('inpTaxable').value) || 0;
+  const other   = parseFloat(document.getElementById('inpOther').value)   || 0;
+  CONTRIB = roth + k401 + taxable + other;
+  YEARS   = Math.max(2, endYr - START_YEAR + 1);
+  YRS     = Array.from({length: YEARS}, (_, i) => START_YEAR + i);
+
+  // FIX: all template literals now use backticks
+  document.getElementById('hdrVal').textContent  = '$' + START.toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2});
+  document.getElementById('hdrSub').textContent  = `$${CONTRIB.toLocaleString()}/yr · Monte Carlo 10,000 paths · ${START_YEAR}–${endYr} · Starting $${START.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})}`;
+  document.getElementById('bContrib').textContent = '$' + CONTRIB.toLocaleString() + '/yr';
+  document.getElementById('outcomeHdr').textContent = `Projected Outcomes by ${endYr}`;
+  document.getElementById('probHdr').textContent    = `Probability of Reaching Target by ${endYr}`;
+  document.getElementById('sumStart').textContent   = '$' + START.toLocaleString('en-US', {minimumFractionDigits:2});
+  document.getElementById('sumContrib').textContent = '$' + CONTRIB.toLocaleString('en-US', {minimumFractionDigits:2});
+  document.getElementById('sumWeekly').textContent  = '~$' + (CONTRIB / 52).toFixed(2) + '/wk';
+  document.getElementById('sumYears').textContent   = `${YEARS} years (${START_YEAR}–${endYr})`;
+  document.getElementById('sumTotal').textContent   = '$' + (CONTRIB * YEARS).toLocaleString();
+
+  rebuildAndRender();
+  toggleSettings();
+}
+
+// ── PRNG (seeded) ─────────────────────────────────────────────────────────────
+function mkRand(seed) {
+  return () => {
+    seed |= 0;
+    seed = seed + 0x6D2B79F5 | 0;
+    let t = Math.imul(seed ^ seed >>> 15, 1 | seed);
+    t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+    return ((t ^ t >>> 14) >>> 0) / 4294967296;
+  };
+}
+
+// ── Normal distribution simulation ───────────────────────────────────────────
+function simulate(mu, sigma) {
+  const rand = mkRand(42);
+  const res  = Array.from({length: YEARS}, () => new Float64Array(N));
+  for (let s = 0; s < N; s++) {
+    let v = START;
+    for (let y = 0; y < YEARS; y++) {
+      const u1 = rand() || 1e-10, u2 = rand();
+      const z  = Math.sqrt(-2 * Math.log(u1)) * Math.cos(2 * Math.PI * u2);
+      v = Math.max(v * (1 + mu + sigma * z) + CONTRIB, 0);
+      res[y][s] = v;
+    }
+  }
+  return res;
+}
+
+// ── Bootstrap simulation ──────────────────────────────────────────────────────
+function simulateBootstrap() {
+  const res = Array.from({length: YEARS}, () => new Float64Array(N));
+  for (let s = 0; s < N; s++) {
+    let v = START;
+    for (let y = 0; y < YEARS; y++) {
+      const r = SP500[Math.floor(Math.random() * SP500.length)];
+      v = Math.max(v * (1 + r) + CONTRIB, 0);
+      res[y][s] = v;
+    }
+  }
+  return res;
+}
+
+// ── Percentile helper ─────────────────────────────────────────────────────────
+function pct(arr, p) {
+  const s  = Float64Array.from(arr).sort();
+  const i  = (p / 100) * (s.length - 1);
+  const lo = Math.floor(i), hi = Math.ceil(i);
+  return s[lo] + (s[hi] - s[lo]) * (i - lo);
+}
+
+const fmt  = v => v >= 1e6 ? '$' + (v / 1e6).toFixed(2) + 'M' : '$' + Math.round(v).toLocaleString();
+const fmtS = v => v >= 1e6 ? (v / 1e6).toFixed(2) + 'M' : '$' + (v / 1000).toFixed(0) + 'k';
+
+Chart.defaults.color       = '#6b7588';
+Chart.defaults.font.family = "'DM Mono',monospace";
+Chart.defaults.font.size   = 11;
+const GRID = 'rgba(35,43,56,0.8)';
+
+// ── Build static UI elements ──────────────────────────────────────────────────
+const bar = document.getElementById('scnBar');
+SCNS.forEach((s, i) => {
+  const btn = document.createElement('button');
+  btn.className = 'scn-btn' + (i === 1 ? ' active' : '');
+  const retLabel = s.bootstrap ? 'Actual' : (s.mu * 100).toFixed(2) + '%';
+  // FIX: template literals with backticks
+  btn.innerHTML = `
+    <div class="scn-name">${s.label}</div>
+    <div class="scn-ret" style="color:${s.color}">${retLabel}</div>
+    <div class="scn-src">${s.src}</div>
+    <div class="scn-dot" style="background:${s.color}"></div>
+  `;
+  btn.onclick = () => render(i);
+  bar.appendChild(btn);
+});
+
+const hg = document.getElementById('histGrid');
+HISTORY.forEach(d => {
+  const c = document.createElement('div');
+  c.className = 'yr-card';
+  // FIX: template literals with backticks
+  c.innerHTML = `<div class="yr-lbl">${d.yr}</div><div class="yr-val ${d.r >= 0 ? 'pos' : 'neg'}">${d.r >= 0 ? '+' : ''}${d.r.toFixed(1)}%</div>`;
+  hg.appendChild(c);
+});
+
+// ── Comparison chart ──────────────────────────────────────────────────────────
+function buildCmpChart() {
+  if (cmpInst) cmpInst.destroy();
+  cmpInst = new Chart(document.getElementById('cmpChart'), {
+    type: 'bar',
+    data: {
+      labels: SCNS.map(s => s.name),
+      datasets: [{
+        label: 'Median',
+        data: MEDIANS,
+        backgroundColor: SCNS.map(s => s.color + '99'),
+        borderColor: SCNS.map(s => s.color),
+        borderWidth: 1.5,
+        borderRadius: 5,
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: {display: false},
+        tooltip: {callbacks: {label: ctx => 'Median: ' + fmt(ctx.parsed.y)}}
+      },
+      scales: {
+        x: {grid: {display: false}},
+        y: {grid: {color: GRID}, ticks: {callback: v => '$' + fmtS(v)}}
+      }
+    }
+  });
+}
+
+// ── Rebuild all simulations then re-render ────────────────────────────────────
+function rebuildAndRender() {
+  ALL     = SCNS.map(s => s.bootstrap ? simulateBootstrap() : simulate(s.mu, s.sigma));
+  MEDIANS = ALL.map(r => pct(r[YEARS - 1], 50));
+  buildCmpChart();
+  render(activeIdx);
+}
+
+// ── Main render ───────────────────────────────────────────────────────────────
+function render(idx) {
+  activeIdx = idx;
+  document.querySelectorAll('.scn-btn').forEach((b, i) => b.classList.toggle('active', i === idx));
+
+  const S = SCNS[idx], res = ALL[idx], end = res[YEARS - 1];
+
+  document.getElementById('bScen').textContent = S.name;
+  document.getElementById('bRet').textContent  = S.bootstrap
+    ? 'Resampled from 1928–2025'
+    : (S.mu * 100).toFixed(2) + '% annualized';
+  document.getElementById('bVol').textContent  = S.bootstrap ? 'Historical' : (S.sigma * 100).toFixed(0) + '%';
+  document.getElementById('bNote').textContent = S.note;
+  // FIX: template literals with backticks
+  document.getElementById('fanSub').textContent = S.bootstrap
+    ? `Bootstrap · S&P 500 actual returns 1928–2025 · ${START_YEAR}–${START_YEAR + YEARS - 1}`
+    : `${S.name} · μ=${(S.mu * 100).toFixed(2)}%, σ=${(S.sigma * 100).toFixed(0)}% · ${START_YEAR}–${START_YEAR + YEARS - 1}`;
+
+  const mean = Array.from(end).reduce((a, b) => a + b, 0) / N;
+  const p10  = pct(end, 10), p25 = pct(end, 25), p50 = pct(end, 50);
+  const p75  = pct(end, 75), p90 = pct(end, 90);
+
+  document.getElementById('sMean').textContent = fmt(mean);
+  document.getElementById('sP50').textContent  = fmt(p50);
+  document.getElementById('sP10').textContent  = fmt(p10);
+  document.getElementById('sP25').textContent  = fmt(p25);
+  document.getElementById('sP75').textContent  = fmt(p75);
+  document.getElementById('sP90').textContent  = fmt(p90);
+
+  // Probability cards
+  const TGTS = [{l:'$100k',v:1e5},{l:'$250k',v:2.5e5},{l:'$500k',v:5e5},{l:'$1M',v:1e6},{l:'$2M',v:2e6},{l:'$3M',v:3e6},{l:'$5M',v:5e6},{l:'$10M',v:1e7}];
+  const COLS  = ['#7eeac9','#6eb5ff','#e8c97e','#c878ff','#ff8a7e','#f0a060','#a78bfa','#38bdf8'];
+  const pg    = document.getElementById('probGrid');
+  pg.innerHTML = '';
+  TGTS.forEach((t, i) => {
+    const prob = Array.from(end).filter(v => v >= t.v).length / N * 100;
+    const card = document.createElement('div');
+    card.className = 'prob-card';
+    card.style.setProperty('--w', prob.toFixed(1) + '%');
+    card.style.setProperty('--c', COLS[i]);
+    // FIX: template literals with backticks
+    card.innerHTML = `<div class="p-tgt">${t.l}+</div><div class="p-pct" style="color:${COLS[i]}">${prob.toFixed(1)}<span>%</span></div>`;
+    pg.appendChild(card);
+  });
+
+  // Fan chart percentile paths
+  const paths = {p10:[], p20:[], p50:[], p80:[], p90:[]};
+  for (let y = 0; y < YEARS; y++) {
+    paths.p10.push(pct(res[y], 10));
+    paths.p20.push(pct(res[y], 20));
+    paths.p50.push(pct(res[y], 50));
+    paths.p80.push(pct(res[y], 80));
+    paths.p90.push(pct(res[y], 90));
+  }
+
+  if (fanInst) fanInst.destroy();
+  fanInst = new Chart(document.getElementById('fanChart'), {
+    type: 'line',
+    data: {
+      labels: YRS,
+      datasets: [
+        {label:'10–90 band', data:paths.p90, fill:'+3', borderColor:'transparent', backgroundColor:S.color+'1a', pointRadius:0, tension:.4},
+        {label:'20–80 band', data:paths.p80, fill:'+1', borderColor:'transparent', backgroundColor:S.color+'2e', pointRadius:0, tension:.4},
+        {label:'Median',     data:paths.p50, fill:false, borderColor:S.color,       borderWidth:2.5, pointRadius:0, tension:.4},
+        {label:'20th',       data:paths.p20, fill:false, borderColor:'transparent', pointRadius:0, tension:.4},
+        {label:'10th %ile',  data:paths.p10, fill:false, borderColor:S.color+'80',  borderWidth:1.5, borderDash:[4,4], pointRadius:0, tension:.4},
+        {label:'90th %ile',  data:paths.p90, fill:false, borderColor:S.color+'80',  borderWidth:1.5, borderDash:[4,4], pointRadius:0, tension:.4},
+      ]
+    },
+    options: {
+      responsive: true,
+      interaction: {mode:'index', intersect:false},
+      plugins: {
+        legend: {labels: {filter: item => ['Median','10th %ile','90th %ile'].includes(item.text)}},
+        // FIX: template literal with backtick
+        tooltip: {callbacks: {label: ctx => `${ctx.dataset.label}: ${fmt(ctx.parsed.y)}`}}
+      },
+      scales: {
+        x: {grid:{color:GRID}, ticks:{maxTicksLimit:10}},
+        y: {grid:{color:GRID}, ticks:{callback: v => '$' + fmtS(v)}}
+      }
+    }
+  });
+
+  // Histogram
+  const vals = Array.from(end);
+  // FIX: spread operator uses ... (three dots), not … (ellipsis character)
+  const minV = Math.min(...vals), maxV = Math.max(...vals);
+  const BINS = 50, bw = (maxV - minV) / BINS;
+  const counts = new Array(BINS).fill(0);
+  vals.forEach(v => {
+    let b = Math.floor((v - minV) / bw);
+    if (b >= BINS) b = BINS - 1;
+    counts[b]++;
+  });
+  const bLbls = counts.map((_, i) => '$' + fmtS(minV + (i + .5) * bw));
+  const bCol  = counts.map((_, i) => {
+    const v = minV + (i + .5) * bw;
+    return v < p25 ? '#6eb5ff99' : v < p50 ? S.color + '99' : v < p75 ? '#7eeac999' : '#c878ff99';
+  });
+
+  if (histInst) histInst.destroy();
+  histInst = new Chart(document.getElementById('histChart'), {
+    type: 'bar',
+    data: {labels: bLbls, datasets: [{data: counts, backgroundColor: bCol, borderWidth: 0, borderRadius: 2}]},
+    options: {
+      responsive: true,
+      plugins: {
+        legend: {display: false},
+        tooltip: {callbacks: {
+          title:  items => bLbls[items[0].dataIndex],
+          // FIX: template literal with backtick
+          label:  ctx   => `${ctx.parsed.y} simulations`
+        }}
+      },
+      scales: {
+        x: {grid:{display:false}, ticks:{maxTicksLimit:7, maxRotation:30}},
+        y: {grid:{color:GRID}, title:{display:true, text:'Simulations', color:'#6b7588'}}
+      }
+    }
+  });
+}
+
+// ── Init ──────────────────────────────────────────────────────────────────────
+rebuildAndRender();
+</script>
 
 <!-- FLOATING DONATE FAB -->
-
 <div class="donate-fab" id="donateFab">
   <div class="donate-panel" id="donatePanel">
     <p>If you like this tool, please donate to help me keep it free! ☕</p>
@@ -336,182 +654,15 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
     ❤ Support this tool
   </button>
 </div>
-
 <script>
-const SCNS = [
-  {name:'Bear',      label:'BEAR', mu:.045, sigma:.17, color:'#ff8a7e', src:'Vanguard base case',  note:'Vanguard VCMM (Dec 2025): muted 4–5% annualized due to stretched large-cap tech valuations', bootstrap:false},
-  {name:'Base',      label:'BASE', mu:.058, sigma:.16, color:'#e8c97e', src:'Fidelity 20yr CMA',   note:'Fidelity 20-year capital markets assumption: 5.8% nominal US equity return (2025–2044 horizon)', bootstrap:false},
-  {name:'Bull',      label:'BULL', mu:.080, sigma:.15, color:'#7eeac9', src:'Historical 30yr avg', note:'Long-run US total market historical average ~8%; consistent with Vanguard 30-year upper range of 6.4%', bootstrap:false},
-  {name:'Optimistic',label:'OPT',  mu:.100, sigma:.17, color:'#c878ff', src:'Top-decile forecast', note:'Optimistic scenario: 10% annualized — above consensus but within historical possibility for a strong decade', bootstrap:false},
-  {name:'Bootstrap', label:'HIST', mu:null, sigma:null,color:'#f0a060', src:'S&P 500 1928–2025',  note:'Bootstrap resampling from 97 years of actual S&P 500 returns (1928–2025). Each path draws random historical years — no normal distribution assumed. Captures real fat tails and crash sequences.', bootstrap:true},
-];
-
-const SP500 = [
-  43.81,-8.30,53.99,-3.16,-47.07,-15.15,-28.48,52.95,57.35,-5.94,
-  46.74,41.89,-9.78,-11.59,44.02,19.03,30.45,-10.67,-12.43,20.34,
-  25.76,19.40,36.44,-8.19,52.62,31.56,6.56,-10.78,43.36,11.96,
-  0.47,26.64,-8.81,22.68,16.48,12.45,-9.97,23.80,11.06,-8.50,
-  4.01,14.31,18.98,-14.31,-25.90,37.00,23.84,-7.18,6.51,18.52,
-  32.42,-4.70,20.42,22.34,6.15,31.73,18.67,5.25,16.54,31.48,
-  -3.10,30.35,7.53,9.97,1.33,37.20,22.68,33.10,28.34,21.04,
-  -9.10,-11.85,-22.10,28.36,10.74,4.83,15.61,5.48,-36.55,25.94,
-  14.82,2.10,15.89,32.15,13.48,1.38,11.77,21.61,-4.38,31.49,
-  18.40,28.71,-18.11,26.29,25.02,16.80
-].map(r => r / 100);
-
-const HISTORY = [
-  {yr:'2016',r:11.96},{yr:'2017',r:21.83},{yr:'2018',r:-4.38},{yr:'2019',r:31.49},
-  {yr:'2020',r:18.40},{yr:'2021',r:28.71},{yr:'2022',r:-18.11},{yr:'2023',r:26.29},
-  {yr:'2024',r:25.02},{yr:'2025',r:16.80},
-];
-
-let N=10000, START=8492.71, CONTRIB=7500, START_YEAR=2026, YEARS=25;
-let YRS=Array.from({length:YEARS},(_,i)=>START_YEAR+i);
-let ALL=[], MEDIANS=[], activeIdx=1;
-let fanInst=null, histInst=null, cmpInst=null;
-
-function updateTotal(){
-  const roth=parseFloat(document.getElementById('inpRoth').value)||0;
-  const k401=parseFloat(document.getElementById('inp401k').value)||0;
-  const taxable=parseFloat(document.getElementById('inpTaxable').value)||0;
-  const other=parseFloat(document.getElementById('inpOther').value)||0;
-  document.getElementById('totalContribDisplay').textContent='$'+(roth+k401+taxable+other).toLocaleString('en-US',{minimumFractionDigits:0});
+function toggleDonate(){
+  const p = document.getElementById('donatePanel');
+  p.classList.toggle('show');
 }
-
-function toggleSettings(){
-  document.getElementById('settingsToggle').classList.toggle('open');
-  document.getElementById('settingsPanel').classList.toggle('open');
-}
-
-function applySettings(){
-  START=parseFloat(document.getElementById('inpStart').value)||8492.71;
-  START_YEAR=parseInt(document.getElementById('inpStartYear').value)||2026;
-  const endYr=parseInt(document.getElementById('inpEndYear').value)||2050;
-  const roth=parseFloat(document.getElementById('inpRoth').value)||0;
-  const k401=parseFloat(document.getElementById('inp401k').value)||0;
-  const taxable=parseFloat(document.getElementById('inpTaxable').value)||0;
-  const other=parseFloat(document.getElementById('inpOther').value)||0;
-  CONTRIB=roth+k401+taxable+other;
-  YEARS=Math.max(2,endYr-START_YEAR+1);
-  YRS=Array.from({length:YEARS},(_,i)=>START_YEAR+i);
-  document.getElementById('hdrVal').textContent='$'+START.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
-  document.getElementById('hdrSub').textContent=`$${CONTRIB.toLocaleString()}/yr · Monte Carlo 10,000 paths · ${START_YEAR}–${endYr}`;
-  document.getElementById('bContrib').textContent='$'+CONTRIB.toLocaleString()+'/yr';
-  document.getElementById('outcomeHdr').textContent=`Projected Outcomes by ${endYr}`;
-  document.getElementById('probHdr').textContent=`Probability of Reaching Target by ${endYr}`;
-  document.getElementById('sumStart').textContent='$'+START.toLocaleString('en-US',{minimumFractionDigits:2});
-  document.getElementById('sumContrib').textContent='$'+CONTRIB.toLocaleString('en-US',{minimumFractionDigits:2});
-  document.getElementById('sumWeekly').textContent='~$'+(CONTRIB/52).toFixed(2)+'/wk';
-  document.getElementById('sumYears').textContent=`${YEARS} years (${START_YEAR}–${endYr})`;
-  document.getElementById('sumTotal').textContent='$'+(CONTRIB*YEARS).toLocaleString();
-  rebuildAndRender();
-  toggleSettings();
-}
-
-function mkRand(seed){
-  return()=>{seed|=0;seed=seed+0x6D2B79F5|0;let t=Math.imul(seed^seed>>>15,1|seed);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};
-}
-
-function simulate(mu,sigma){
-  const rand=mkRand(42);
-  const res=Array.from({length:YEARS},()=>new Float64Array(N));
-  for(let s=0;s<N;s++){let v=START;for(let y=0;y<YEARS;y++){const u1=rand()||1e-10,u2=rand();const z=Math.sqrt(-2*Math.log(u1))*Math.cos(2*Math.PI*u2);v=Math.max(v*(1+mu+sigma*z)+CONTRIB,0);res[y][s]=v;}}
-  return res;
-}
-
-function simulateBootstrap(){
-  const res=Array.from({length:YEARS},()=>new Float64Array(N));
-  for(let s=0;s<N;s++){let v=START;for(let y=0;y<YEARS;y++){const r=SP500[Math.floor(Math.random()*SP500.length)];v=Math.max(v*(1+r)+CONTRIB,0);res[y][s]=v;}}
-  return res;
-}
-
-function pct(arr,p){const s=Float64Array.from(arr).sort();const i=(p/100)*(s.length-1),lo=Math.floor(i),hi=Math.ceil(i);return s[lo]+(s[hi]-s[lo])*(i-lo);}
-
-const fmt=v=>v>=1e6?'$'+(v/1e6).toFixed(2)+'M':'$'+Math.round(v).toLocaleString();
-const fmtS=v=>v>=1e6?(v/1e6).toFixed(2)+'M':'$'+(v/1000).toFixed(0)+'k';
-
-Chart.defaults.color='#6b7588';
-Chart.defaults.font.family="'DM Mono',monospace";
-Chart.defaults.font.size=11;
-const GRID='rgba(35,43,56,0.8)';
-
-const bar=document.getElementById('scnBar');
-SCNS.forEach((s,i)=>{
-  const btn=document.createElement('button');
-  btn.className='scn-btn'+(i===1?' active':'');
-  const retLabel=s.bootstrap?'Actual':(s.mu*100).toFixed(2)+'%';
-  btn.innerHTML=`<div class="scn-name">${s.label}</div><div class="scn-ret" style="color:${s.color}">${retLabel}</div><div class="scn-src">${s.src}</div><div class="scn-dot" style="background:${s.color}"></div>`;
-  btn.onclick=()=>render(i);
-  bar.appendChild(btn);
+document.addEventListener('click', function(e){
+  const fab = document.getElementById('donateFab');
+  if(!fab.contains(e.target)) document.getElementById('donatePanel').classList.remove('show');
 });
-
-const hg=document.getElementById('histGrid');
-HISTORY.forEach(d=>{const c=document.createElement('div');c.className='yr-card';c.innerHTML=`<div class="yr-lbl">${d.yr}</div><div class="yr-val ${d.r>=0?'pos':'neg'}">${d.r>=0?'+':''}${d.r.toFixed(1)}%</div>`;hg.appendChild(c);});
-
-function buildCmpChart(){
-  if(cmpInst)cmpInst.destroy();
-  cmpInst=new Chart(document.getElementById('cmpChart'),{type:'bar',data:{labels:SCNS.map(s=>s.name),datasets:[{label:'Median',data:MEDIANS,backgroundColor:SCNS.map(s=>s.color+'99'),borderColor:SCNS.map(s=>s.color),borderWidth:1.5,borderRadius:5}]},options:{responsive:true,plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>'Median: '+fmt(ctx.parsed.y)}}},scales:{x:{grid:{display:false}},y:{grid:{color:GRID},ticks:{callback:v=>'$'+fmtS(v)}}}}});
-}
-
-function rebuildAndRender(){
-  ALL=SCNS.map(s=>s.bootstrap?simulateBootstrap():simulate(s.mu,s.sigma));
-  MEDIANS=ALL.map(r=>pct(r[YEARS-1],50));
-  buildCmpChart();
-  render(activeIdx);
-}
-
-function render(idx){
-  activeIdx=idx;
-  document.querySelectorAll('.scn-btn').forEach((b,i)=>b.classList.toggle('active',i===idx));
-  const S=SCNS[idx],res=ALL[idx],end=res[YEARS-1];
-  document.getElementById('bScen').textContent=S.name;
-  document.getElementById('bRet').textContent=S.bootstrap?'Resampled from 1928–2025':(S.mu*100).toFixed(2)+'% annualized';
-  document.getElementById('bVol').textContent=S.bootstrap?'Historical':(S.sigma*100).toFixed(0)+'%';
-  document.getElementById('bNote').textContent=S.note;
-  document.getElementById('fanSub').textContent=S.bootstrap?`Bootstrap · S&P 500 actual returns 1928–2025 · ${START_YEAR}–${START_YEAR+YEARS-1}`:`${S.name} · μ=${(S.mu*100).toFixed(2)}%, σ=${(S.sigma*100).toFixed(0)}% · ${START_YEAR}–${START_YEAR+YEARS-1}`;
-  const mean=Array.from(end).reduce((a,b)=>a+b,0)/N;
-  const p10=pct(end,10),p25=pct(end,25),p50=pct(end,50),p75=pct(end,75),p90=pct(end,90);
-  document.getElementById('sMean').textContent=fmt(mean);
-  document.getElementById('sP50').textContent=fmt(p50);
-  document.getElementById('sP10').textContent=fmt(p10);
-  document.getElementById('sP25').textContent=fmt(p25);
-  document.getElementById('sP75').textContent=fmt(p75);
-  document.getElementById('sP90').textContent=fmt(p90);
-
-  const TGTS=[{l:'$100k',v:1e5},{l:'$250k',v:2.5e5},{l:'$500k',v:5e5},{l:'$1M',v:1e6},{l:'$2M',v:2e6},{l:'$3M',v:3e6},{l:'$5M',v:5e6},{l:'$10M',v:1e7}];
-  const COLS=['#7eeac9','#6eb5ff','#e8c97e','#c878ff','#ff8a7e','#f0a060','#a78bfa','#38bdf8'];
-  const pg=document.getElementById('probGrid');pg.innerHTML='';
-  TGTS.forEach((t,i)=>{const prob=Array.from(end).filter(v=>v>=t.v).length/N*100;const card=document.createElement('div');card.className='prob-card';card.style.setProperty('--w',prob.toFixed(1)+'%');card.style.setProperty('--c',COLS[i]);card.innerHTML=`<div class="p-tgt">${t.l}+</div><div class="p-pct" style="color:${COLS[i]}">${prob.toFixed(1)}<span>%</span></div>`;pg.appendChild(card);});
-
-  const paths={p10:[],p20:[],p50:[],p80:[],p90:[]};
-  for(let y=0;y<YEARS;y++){paths.p10.push(pct(res[y],10));paths.p20.push(pct(res[y],20));paths.p50.push(pct(res[y],50));paths.p80.push(pct(res[y],80));paths.p90.push(pct(res[y],90));}
-
-  if(fanInst)fanInst.destroy();
-  fanInst=new Chart(document.getElementById('fanChart'),{type:'line',data:{labels:YRS,datasets:[{label:'10–90 band',data:paths.p90,fill:'+3',borderColor:'transparent',backgroundColor:S.color+'1a',pointRadius:0,tension:.4},{label:'20–80 band',data:paths.p80,fill:'+1',borderColor:'transparent',backgroundColor:S.color+'2e',pointRadius:0,tension:.4},{label:'Median',data:paths.p50,fill:false,borderColor:S.color,borderWidth:2.5,pointRadius:0,tension:.4},{label:'20th',data:paths.p20,fill:false,borderColor:'transparent',pointRadius:0,tension:.4},{label:'10th %ile',data:paths.p10,fill:false,borderColor:S.color+'80',borderWidth:1.5,borderDash:[4,4],pointRadius:0,tension:.4},{label:'90th %ile',data:paths.p90,fill:false,borderColor:S.color+'80',borderWidth:1.5,borderDash:[4,4],pointRadius:0,tension:.4}]},options:{responsive:true,interaction:{mode:'index',intersect:false},plugins:{legend:{labels:{filter:item=>['Median','10th %ile','90th %ile'].includes(item.text)}},tooltip:{callbacks:{label:ctx=>`${ctx.dataset.label}: ${fmt(ctx.parsed.y)}`}}},scales:{x:{grid:{color:GRID},ticks:{maxTicksLimit:10}},y:{grid:{color:GRID},ticks:{callback:v=>'$'+fmtS(v)}}}}});
-
-  const vals=Array.from(end);
-  const minV=Math.min(...vals),maxV=Math.max(...vals),BINS=50,bw=(maxV-minV)/BINS;
-  const counts=new Array(BINS).fill(0);
-  vals.forEach(v=>{let b=Math.floor((v-minV)/bw);if(b>=BINS)b=BINS-1;counts[b]++;});
-  const bLbls=counts.map((_,i)=>'$'+fmtS(minV+(i+.5)*bw));
-  const bCol=counts.map((_,i)=>{const v=minV+(i+.5)*bw;return v<p25?'#6eb5ff99':v<p50?S.color+'99':v<p75?'#7eeac999':'#c878ff99';});
-  if(histInst)histInst.destroy();
-  histInst=new Chart(document.getElementById('histChart'),{type:'bar',data:{labels:bLbls,datasets:[{data:counts,backgroundColor:bCol,borderWidth:0,borderRadius:2}]},options:{responsive:true,plugins:{legend:{display:false},tooltip:{callbacks:{title:items=>bLbls[items[0].dataIndex],label:ctx=>`${ctx.parsed.y} simulations`}}},scales:{x:{grid:{display:false},ticks:{maxTicksLimit:7,maxRotation:30}},y:{grid:{color:GRID},title:{display:true,text:'Simulations',color:'#6b7588'}}}}});
-}
-
-rebuildAndRender();
-
-// Feedback form
-document.getElementById('feedbackForm').addEventListener('submit',async function(e){
-  e.preventDefault();
-  const form=e.target;
-  const data=new FormData(form);
-  try{const res=await fetch(form.action,{method:'POST',body:data,headers:{Accept:'application/json'}});if(res.ok){form.reset();document.getElementById('formSuccess').style.display='block';setTimeout(()=>document.getElementById('formSuccess').style.display='none',4000);}}catch(err){console.error(err);}
-});
-
-// Donate FAB
-function toggleDonate(){document.getElementById('donatePanel').classList.toggle('show');}
-document.addEventListener('click',function(e){const fab=document.getElementById('donateFab');if(!fab.contains(e.target))document.getElementById('donatePanel').classList.remove('show');});
 </script>
 
 </body>
