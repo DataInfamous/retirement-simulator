@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Retirement Monte Carlo Simulator</title>
+<title>RetireCast – Monte Carlo Retirement Forecast</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <style>
@@ -113,6 +113,40 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
 .run-btn:hover{background:#f0d898;transform:translateY(-1px)}
 .settings-note{font-size:.72rem;color:var(--muted);font-family:var(--sans);margin-top:12px;line-height:1.5;padding-top:12px;border-top:1px solid var(--border)}
 
+
+/* FEEDBACK MODAL */
+.fb-overlay{position:fixed;inset:0;background:rgba(0,0,0,.65);backdrop-filter:blur(4px);z-index:1100;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .25s ease;}
+.fb-overlay.open{opacity:1;pointer-events:auto;}
+.fb-modal{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:28px 30px;width:min(480px,92vw);box-shadow:0 24px 64px rgba(0,0,0,.6);transform:translateY(20px) scale(.97);transition:transform .3s cubic-bezier(.16,1,.3,1);position:relative;}
+.fb-overlay.open .fb-modal{transform:translateY(0) scale(1);}
+.fb-close{position:absolute;top:14px;right:16px;background:none;border:none;color:var(--muted);font-size:1.3rem;cursor:pointer;line-height:1;padding:4px 8px;border-radius:4px;transition:color .15s,background .15s;}
+.fb-close:hover{color:var(--text);background:var(--surface2);}
+.fb-title{font-family:var(--serif);font-size:1.3rem;margin-bottom:4px;}
+.fb-title em{color:var(--gold);font-style:italic;}
+.fb-sub{font-family:var(--mono);font-size:.7rem;color:var(--muted);margin-bottom:22px;letter-spacing:.04em;}
+.fb-group{display:flex;flex-direction:column;gap:6px;margin-bottom:16px;}
+.fb-label{font-family:var(--mono);font-size:.65rem;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;}
+.fb-input,.fb-select,.fb-textarea{background:var(--surface2);border:1px solid var(--border);border-radius:7px;padding:10px 14px;font-family:var(--mono);font-size:.88rem;color:var(--text);width:100%;outline:none;transition:border-color .2s;-webkit-appearance:none;}
+.fb-input:focus,.fb-select:focus,.fb-textarea:focus{border-color:var(--gold);}
+.fb-select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%236b7588' d='M6 8L0 0h12z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;cursor:pointer;}
+.fb-select option{background:var(--surface2);}
+.fb-textarea{resize:vertical;min-height:110px;line-height:1.5;}
+.fb-stars{display:flex;gap:6px;margin-top:2px;}
+.fb-star{font-size:1.4rem;cursor:pointer;color:var(--border);transition:color .15s,transform .15s;}
+.fb-star:hover,.fb-star.lit{color:var(--gold);}
+.fb-star:hover{transform:scale(1.15);}
+.fb-submit{background:var(--gold);color:#0c0f14;border:none;border-radius:7px;padding:12px 24px;font-family:var(--mono);font-size:.88rem;font-weight:500;cursor:pointer;transition:all .2s;width:100%;margin-top:4px;letter-spacing:.04em;}
+.fb-submit:hover{background:#f0d898;transform:translateY(-1px);}
+.fb-submit:disabled{opacity:.5;cursor:not-allowed;transform:none;}
+.fb-success{display:none;text-align:center;padding:20px 0;}
+.fb-success.show{display:block;}
+.fb-success .check{font-size:2.5rem;margin-bottom:12px;}
+.fb-success p{font-family:var(--sans);color:var(--muted);font-size:.9rem;line-height:1.6;}
+.fb-success strong{color:var(--text);}
+/* Feedback trigger button */
+.fb-trigger{display:flex;align-items:center;gap:9px;background:var(--surface2);color:var(--muted);border:1px solid var(--border);border-radius:50px;padding:11px 18px;font-family:var(--mono);font-size:.82rem;font-weight:500;cursor:pointer;transition:all .18s;white-space:nowrap;}
+.fb-trigger:hover{background:var(--surface);color:var(--text);border-color:var(--muted);transform:translateY(-2px);}
+
 @keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
 .hdr,.scn-bar,.banner,.stats{animation:fadeUp .45s ease both}
 
@@ -138,7 +172,8 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
 
   <header class="hdr">
     <div>
-      <h1>Retirement <em>Forecast</em></h1>
+      <h1>Retire<em>Cast</em></h1>
+      <div style="font-family:var(--mono);font-size:.72rem;color:var(--muted);letter-spacing:.12em;text-transform:uppercase;margin-top:5px;margin-bottom:6px">Monte Carlo Retirement Forecast</div>
       <div class="hdr-sub" id="hdrSub">$7,500/yr · Monte Carlo 10,000 paths · 2026–2050 · Starting $8,492.71</div>
     </div>
     <div class="hdr-right">
@@ -163,8 +198,8 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
   <!-- SETTINGS TOGGLE (FIX: moved outside the limits banner div) -->
   <button class="settings-toggle" id="settingsToggle" onclick="toggleSettings()">
     <span class="gear">⚙</span>
-    <span>Customize your numbers</span>
-    <span style="font-size:.72rem;color:var(--muted)">Balance · Contributions · Timeline</span>
+    <span>Adjust Your Scenario</span>
+    <span style="font-size:.72rem;color:var(--muted)">Customize Your Financial Inputs</span>
     <span class="arrow">▼</span>
   </button>
 
@@ -748,6 +783,9 @@ rebuildAndRender();
       </a>
     </div>
   </div>
+  <button class="fb-trigger" onclick="openFeedback()">
+    💬 Suggest a Feature
+  </button>
   <button class="donate-toggle" id="donateToggle" onclick="toggleDonate()">
     ❤ Support this tool
   </button>
@@ -761,6 +799,131 @@ document.addEventListener('click', function(e){
   const fab = document.getElementById('donateFab');
   if(!fab.contains(e.target)) document.getElementById('donatePanel').classList.remove('show');
 });
+</script>
+
+
+<!-- FEEDBACK MODAL -->
+<div class="fb-overlay" id="fbOverlay" onclick="overlayClick(event)">
+  <div class="fb-modal" id="fbModal">
+    <button class="fb-close" onclick="closeFeedback()">✕</button>
+
+    <!-- Form view -->
+    <div id="fbForm">
+      <div class="fb-title">Share Your <em>Feedback</em></div>
+      <div class="fb-sub">RetireCast · Help us improve · Takes 60 seconds</div>
+
+      <form id="feedbackForm" action="https://formspree.io/f/xdawwaey" method="POST" onsubmit="submitFeedback(event)">
+
+        <div class="fb-group">
+          <label class="fb-label">Name <span style="color:var(--muted);font-size:.6rem">(optional)</span></label>
+          <input class="fb-input" type="text" name="name" placeholder="Your name">
+        </div>
+
+        <div class="fb-group">
+          <label class="fb-label">Category</label>
+          <select class="fb-select" name="category" required>
+            <option value="" disabled selected>Select a category…</option>
+            <option value="Feature Request">🚀 Feature Request</option>
+            <option value="Bug Report">🐛 Bug Report</option>
+            <option value="Data / Accuracy">📊 Data or Accuracy Issue</option>
+            <option value="UI / Design">🎨 UI / Design Feedback</option>
+            <option value="General Feedback">💬 General Feedback</option>
+            <option value="Other">✨ Other</option>
+          </select>
+        </div>
+
+        <div class="fb-group">
+          <label class="fb-label">Your Suggestion</label>
+          <textarea class="fb-textarea" name="message" placeholder="Describe your idea, issue, or feedback…" required></textarea>
+        </div>
+
+        <div class="fb-group">
+          <label class="fb-label">How useful is RetireCast? <span style="color:var(--muted);font-size:.6rem">(optional)</span></label>
+          <div class="fb-stars" id="starRow">
+            <span class="fb-star" data-v="1" onclick="setStars(1)">★</span>
+            <span class="fb-star" data-v="2" onclick="setStars(2)">★</span>
+            <span class="fb-star" data-v="3" onclick="setStars(3)">★</span>
+            <span class="fb-star" data-v="4" onclick="setStars(4)">★</span>
+            <span class="fb-star" data-v="5" onclick="setStars(5)">★</span>
+          </div>
+          <input type="hidden" name="rating" id="starInput" value="">
+        </div>
+
+        <button class="fb-submit" type="submit" id="fbSubmitBtn">▶ Send Feedback</button>
+      </form>
+    </div>
+
+    <!-- Success view -->
+    <div class="fb-success" id="fbSuccess">
+      <div class="check">✅</div>
+      <p><strong>Thanks for the feedback!</strong><br>Every suggestion helps make RetireCast better for everyone.<br><br>
+      <span style="color:var(--gold);font-family:var(--mono);font-size:.8rem">— The RetireCast Team</span></p>
+    </div>
+  </div>
+</div>
+
+<script>
+function openFeedback(){
+  document.getElementById('fbOverlay').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+function closeFeedback(){
+  document.getElementById('fbOverlay').classList.remove('open');
+  document.body.style.overflow='';
+}
+function overlayClick(e){
+  if(e.target===document.getElementById('fbOverlay')) closeFeedback();
+}
+document.addEventListener('keydown',e=>{ if(e.key==='Escape') closeFeedback(); });
+
+// Stars
+let starVal = 0;
+function setStars(n){
+  starVal = n;
+  document.getElementById('starInput').value = n + ' / 5';
+  document.querySelectorAll('.fb-star').forEach(s=>{
+    s.classList.toggle('lit', parseInt(s.dataset.v) <= n);
+  });
+}
+document.querySelectorAll('.fb-star').forEach(s=>{
+  s.addEventListener('mouseenter',()=>{
+    document.querySelectorAll('.fb-star').forEach(x=>{
+      x.style.color = parseInt(x.dataset.v) <= parseInt(s.dataset.v) ? 'var(--gold)' : 'var(--border)';
+    });
+  });
+  s.addEventListener('mouseleave',()=>{
+    document.querySelectorAll('.fb-star').forEach(x=>{
+      x.style.color = parseInt(x.dataset.v) <= starVal ? 'var(--gold)' : 'var(--border)';
+    });
+  });
+});
+
+async function submitFeedback(e){
+  e.preventDefault();
+  const btn = document.getElementById('fbSubmitBtn');
+  btn.disabled = true;
+  btn.textContent = 'Sending…';
+  try {
+    const res = await fetch('https://formspree.io/f/xdawwaey', {
+      method: 'POST',
+      body: new FormData(e.target),
+      headers: {Accept: 'application/json'}
+    });
+    if(res.ok){
+      document.getElementById('fbForm').style.display = 'none';
+      document.getElementById('fbSuccess').classList.add('show');
+      setTimeout(closeFeedback, 3200);
+    } else {
+      btn.disabled = false;
+      btn.textContent = '▶ Send Feedback';
+      alert('Something went wrong. Please try again.');
+    }
+  } catch(err){
+    btn.disabled = false;
+    btn.textContent = '▶ Send Feedback';
+    alert('Network error. Please try again.');
+  }
+}
 </script>
 
 </body>
