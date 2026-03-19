@@ -519,7 +519,8 @@ function applySettings() {
 
   START_YEAR = Math.max(2024, Math.floor(num('inpStartYear', 2026)));
   const endYr = Math.min(2070, Math.max(START_YEAR + 1, Math.floor(num('inpEndYear', 2050))));
-
+document.getElementById('inpStartYear').value = START_YEAR;
+document.getElementById('inpEndYear').value = endYr;
   const roth = Math.max(0, num('inpRoth', 0));
   const k401 = Math.max(0, num('inp401k', 0));
   const taxable = Math.max(0, num('inpTaxable', 0));
@@ -570,9 +571,12 @@ function applySettings() {
 
   document.getElementById('sumTotal').textContent =
     '$' + (CONTRIB * YEARS).toLocaleString();
+document.getElementById('sumTotal').textContent =
+  '$' + (CONTRIB * YEARS).toLocaleString();
 
-  rebuildAndRender();
-  toggleSettings();
+updateTotal();
+rebuildAndRender();
+toggleSettings();
 }
 
 // ── PRNG (seeded) ─────────────────────────────────────────────────────────────
