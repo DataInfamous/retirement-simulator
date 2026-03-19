@@ -527,17 +527,19 @@ function simulate(mu, sigma) {
 
 // ── Bootstrap simulation ──────────────────────────────────────────────────────
 function simulateBootstrap() {
+  const rand = mkRand(84);
   const res = Array.from({length: YEARS}, () => new Float64Array(N));
   for (let s = 0; s < N; s++) {
     let v = START;
     for (let y = 0; y < YEARS; y++) {
-      const r = SP500[Math.floor(Math.random() * SP500.length)];
+      const r = SP500[Math.floor(rand() * SP500.length)];
       v = Math.max(v * (1 + r) + CONTRIB, 0);
       res[y][s] = v;
     }
   }
   return res;
 }
+
 
 // ── Percentile helper ─────────────────────────────────────────────────────────
 function pct(arr, p) {
