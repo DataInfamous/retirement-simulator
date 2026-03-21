@@ -8,19 +8,309 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <style>
 :root {
-  --bg:#0c0f14; --surface:#13181f; --surface2:#1a2030; --border:#232b38;
-  --gold:#e8c97e; --blue:#6eb5ff; --green:#7eeac9; --red:#ff8a7e; --purple:#c878ff;
-  --text:#e8eaf0; --muted:#6b7588;
-  --mono:'DM Mono',monospace; --serif:'DM Serif Display',serif; --sans:'DM Sans',sans-serif;
+  --bg:#0c0f14;
+  --surface:#13181f;
+  --surface2:#1a2030;
+  --border:#232b38;
+  --gold:#e8c97e;
+  --blue:#6eb5ff;
+  --green:#7eeac9;
+  --red:#ff8a7e;
+  --purple:#c878ff;
+  --orange:#f0a060;
+  --teal:#40d9c0;
+  --text:#e8eaf0;
+  --muted:#6b7588;
+  --mono:'DM Mono',monospace;
+  --serif:'DM Serif Display',serif;
+  --sans:'DM Sans',sans-serif;
 }
 *{box-sizing:border-box;margin:0;padding:0}
-body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:100vh}
-body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
-  background:radial-gradient(ellipse 70% 45% at 15% 8%,rgba(232,201,126,.06) 0%,transparent 60%),
-             radial-gradient(ellipse 55% 40% at 85% 85%,rgba(110,181,255,.05) 0%,transparent 60%)}
-.wrap{max-width:1160px;margin:0 auto;padding:40px 22px 80px;position:relative;z-index:1}
+html{background:var(--bg)}
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:var(--sans);
+  min-height:100vh
+}
+body::before{
+  content:'';
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  z-index:0;
+  background:
+    radial-gradient(ellipse 70% 45% at 15% 8%,rgba(232,201,126,.06) 0%,transparent 60%),
+    radial-gradient(ellipse 55% 40% at 85% 85%,rgba(110,181,255,.05) 0%,transparent 60%)
+}
 
-/* HEADER */
+/* ── MODE PICKER SCREEN ────────────────────────────────────────────────────── */
+#modePicker{
+  position:fixed;
+  inset:0;
+  z-index:9999;
+  background:var(--bg);
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  padding:32px 24px;
+}
+#modePicker h1{
+  font-family:var(--serif);
+  font-size:clamp(2.2rem,6vw,3.4rem);
+  line-height:1.1;
+  text-align:center;
+  margin-bottom:10px
+}
+#modePicker h1 em{font-style:italic;color:var(--gold)}
+#modePicker .tagline{
+  font-family:var(--mono);
+  font-size:.8rem;
+  color:var(--muted);
+  letter-spacing:.1em;
+  text-transform:uppercase;
+  text-align:center;
+  margin-bottom:48px
+}
+.mode-cards{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:16px;
+  width:100%;
+  max-width:580px
+}
+@media(max-width:520px){.mode-cards{grid-template-columns:1fr}}
+.mode-card{
+  background:var(--surface);
+  border:2px solid var(--border);
+  border-radius:16px;
+  padding:28px 24px;
+  cursor:pointer;
+  transition:all .22s;
+  text-align:left;
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+}
+.mode-card:hover{transform:translateY(-3px);box-shadow:0 12px 40px rgba(0,0,0,.5)}
+.mode-card.beginner:hover{border-color:var(--green)}
+.mode-card.advanced:hover{border-color:var(--gold)}
+.mode-icon{font-size:2rem;margin-bottom:4px}
+.mode-title{font-family:var(--serif);font-size:1.3rem}
+.mode-card.beginner .mode-title{color:var(--green)}
+.mode-card.advanced .mode-title{color:var(--gold)}
+.mode-desc{font-size:.82rem;color:var(--muted);line-height:1.6;font-family:var(--sans)}
+.mode-tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:4px}
+.mode-tag{
+  font-family:var(--mono);
+  font-size:.62rem;
+  padding:3px 8px;
+  border-radius:4px;
+  background:var(--surface2);
+  color:var(--muted)
+}
+.mode-card.beginner .mode-tag{background:rgba(126,234,201,.08);color:var(--green)}
+.mode-card.advanced .mode-tag{background:rgba(232,201,126,.08);color:var(--gold)}
+.mode-cta{
+  margin-top:auto;
+  font-family:var(--mono);
+  font-size:.78rem;
+  font-weight:500;
+  display:flex;
+  align-items:center;
+  gap:6px
+}
+.mode-card.beginner .mode-cta{color:var(--green)}
+.mode-card.advanced .mode-cta{color:var(--gold)}
+#modePicker .disclaimer{
+  margin-top:36px;
+  font-size:.65rem;
+  color:var(--muted);
+  text-align:center;
+  max-width:420px;
+  line-height:1.6;
+  font-family:var(--sans)
+}
+
+/* ── SHARED LAYOUT ─────────────────────────────────────────────────────────── */
+.wrap{
+  max-width:1160px;
+  margin:0 auto;
+  padding:40px 22px 80px;
+  position:relative;
+  z-index:1;
+  display:none
+}
+.wrap.visible{display:block}
+
+/* MODE SWITCHER BAR */
+.mode-bar{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:9px;
+  padding:10px 18px;
+  margin-bottom:28px;
+}
+.mode-bar-label{font-family:var(--mono);font-size:.72rem;color:var(--muted)}
+.mode-bar-label strong{color:var(--text)}
+.mode-switch-btn{
+  font-family:var(--mono);
+  font-size:.72rem;
+  color:var(--muted);
+  background:var(--surface2);
+  border:1px solid var(--border);
+  border-radius:6px;
+  padding:6px 14px;
+  cursor:pointer;
+  transition:all .18s;
+}
+.mode-switch-btn:hover{color:var(--text);border-color:var(--muted)}
+
+/* ── BEGINNER UI ────────────────────────────────────────────────────────────── */
+#beginnerUI{display:none}
+#beginnerUI.visible{display:block}
+
+.beg-hdr{text-align:center;margin-bottom:48px}
+.beg-hdr h1{font-family:var(--serif);font-size:clamp(2rem,5vw,3rem);line-height:1.1;margin-bottom:10px}
+.beg-hdr h1 em{font-style:italic;color:var(--gold)}
+.beg-hdr p{font-size:.95rem;color:var(--muted);max-width:480px;margin:0 auto;line-height:1.7}
+
+.beg-form{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:16px;
+  padding:32px;
+  max-width:560px;
+  margin:0 auto 40px;
+}
+.beg-field{margin-bottom:24px}
+.beg-label{font-family:var(--sans);font-size:1rem;color:var(--text);margin-bottom:6px;display:block;font-weight:500}
+.beg-hint{font-size:.75rem;color:var(--muted);margin-bottom:8px;display:block}
+.beg-input{
+  background:var(--surface2);
+  border:2px solid var(--border);
+  border-radius:8px;
+  padding:14px 18px;
+  font-family:var(--mono);
+  font-size:1.1rem;
+  color:var(--text);
+  width:100%;
+  outline:none;
+  transition:border-color .2s;
+}
+.beg-input:focus{border-color:var(--gold)}
+.beg-prefix{position:relative}
+.beg-prefix::before{
+  content:'$';
+  position:absolute;
+  left:14px;
+  top:50%;
+  transform:translateY(-50%);
+  color:var(--muted);
+  font-family:var(--mono);
+  font-size:1rem;
+  pointer-events:none
+}
+.beg-prefix .beg-input{padding-left:28px}
+
+.beg-run{
+  width:100%;
+  padding:16px;
+  background:var(--gold);
+  color:#000;
+  border:none;
+  border-radius:10px;
+  font-family:var(--mono);
+  font-size:1rem;
+  font-weight:500;
+  cursor:pointer;
+  transition:all .2s;
+  letter-spacing:.04em;
+  margin-top:8px;
+}
+.beg-run:hover{background:#f0d898;transform:translateY(-2px);box-shadow:0 8px 28px rgba(232,201,126,.3)}
+
+/* BEGINNER RESULTS */
+.beg-results{max-width:560px;margin:0 auto;display:none}
+.beg-results.show{display:block}
+
+.beg-summary{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:16px;
+  padding:28px 32px;
+  margin-bottom:20px;
+  text-align:center;
+}
+.beg-summary-title{font-family:var(--serif);font-size:1.1rem;color:var(--muted);margin-bottom:20px}
+.beg-range{display:flex;gap:0;background:var(--border);border-radius:12px;overflow:hidden;margin-bottom:20px}
+.beg-range-item{flex:1;padding:20px 12px;background:var(--surface2);text-align:center}
+.beg-range-item:nth-child(2){background:var(--surface);border-left:1px solid var(--border);border-right:1px solid var(--border)}
+.bri-label{font-size:.68rem;color:var(--muted);font-family:var(--mono);text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px}
+.bri-val{font-family:var(--mono);font-size:1.3rem;font-weight:500}
+.bri-sub{font-size:.65rem;color:var(--muted);margin-top:4px}
+
+.beg-sentence{
+  background:var(--surface2);
+  border-radius:10px;
+  padding:16px 20px;
+  font-size:.9rem;
+  color:var(--text);
+  line-height:1.7;
+  text-align:left;
+  border-left:3px solid var(--gold);
+}
+.beg-sentence strong{color:var(--gold)}
+
+.beg-monthly{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:12px;
+  padding:18px 24px;
+  margin-bottom:20px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  flex-wrap:wrap;
+  gap:12px;
+}
+.bm-label{font-size:.8rem;color:var(--muted)}
+.bm-val{font-family:var(--mono);font-size:1.2rem;color:var(--green);font-weight:500}
+
+.beg-chart-wrap{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:16px;
+  padding:22px;
+  margin-bottom:20px;
+}
+.beg-chart-title{font-family:var(--serif);font-size:1rem;margin-bottom:4px}
+.beg-chart-sub{font-size:.72rem;color:var(--muted);font-family:var(--mono);margin-bottom:16px}
+
+.beg-note{
+  font-size:.72rem;
+  color:var(--muted);
+  font-family:var(--sans);
+  text-align:center;
+  line-height:1.6;
+  padding:16px;
+  border:1px solid var(--border);
+  border-radius:8px;
+  background:var(--surface);
+  margin-bottom:16px;
+}
+
+.beg-upgrade{text-align:center;padding:20px;font-family:var(--sans);font-size:.85rem;color:var(--muted)}
+.beg-upgrade a{color:var(--gold);cursor:pointer;text-decoration:underline;background:none;border:none;font-size:.85rem;font-family:var(--sans)}
+
+/* ── ADVANCED UI ────────────────────────────────────────────────────────────── */
+#advancedUI{display:none}
+#advancedUI.visible{display:block}
+
 .hdr{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:40px;padding-bottom:22px;border-bottom:1px solid var(--border);gap:16px;flex-wrap:wrap}
 .hdr h1{font-family:var(--serif);font-size:clamp(1.8rem,4vw,2.8rem);line-height:1.1}
 .hdr h1 em{font-style:italic;color:var(--gold)}
@@ -29,9 +319,12 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
 .hdr-val{font-family:var(--mono);font-size:clamp(1.3rem,2.5vw,1.8rem);color:var(--gold)}
 .hdr-lbl{font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;margin-top:3px}
 
-/* SCENARIO TABS */
-.scn-bar{display:flex;gap:0;margin-bottom:24px;border:1px solid var(--border);border-radius:10px;overflow:hidden}
-.scn-btn{flex:1;padding:14px 10px;background:var(--surface);border:none;color:var(--muted);font-family:var(--mono);font-size:.82rem;cursor:pointer;transition:all .2s;border-right:1px solid var(--border);display:flex;flex-direction:column;align-items:center;gap:3px}
+.scn-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;margin-bottom:24px;border:1px solid var(--border);border-radius:10px}
+.scn-wrap::-webkit-scrollbar{height:3px}
+.scn-wrap::-webkit-scrollbar-track{background:var(--surface)}
+.scn-wrap::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+.scn-bar{display:flex;gap:0;min-width:max-content;width:100%}
+.scn-btn{flex:1;min-width:100px;padding:14px 10px;background:var(--surface);border:none;color:var(--muted);font-family:var(--mono);font-size:.82rem;cursor:pointer;transition:all .2s;border-right:1px solid var(--border);display:flex;flex-direction:column;align-items:center;gap:3px}
 .scn-btn:last-child{border-right:none}
 .scn-btn:hover{background:var(--surface2);color:var(--text)}
 .scn-btn.active{background:var(--surface2);color:var(--text)}
@@ -41,13 +334,11 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
 .scn-dot{width:7px;height:7px;border-radius:50%;margin-top:2px;transition:transform .2s}
 .scn-btn.active .scn-dot{transform:scale(1.4)}
 
-/* BANNER */
 .banner{background:var(--surface);border:1px solid var(--border);border-radius:9px;padding:13px 18px;margin-bottom:24px;display:flex;gap:18px;flex-wrap:wrap;font-size:.78rem;font-family:var(--mono);align-items:center}
 .b-item{color:var(--muted)}
 .b-item strong{color:var(--text);font-weight:500}
 .b-note{margin-left:auto;font-size:.68rem;color:var(--muted);font-style:italic;font-family:var(--sans);max-width:340px;text-align:right}
 
-/* STATS */
 .sec-hdr{font-family:var(--serif);font-size:1rem;color:var(--muted);margin-bottom:14px;display:flex;align-items:center;gap:12px}
 .sec-hdr::after{content:'';flex:1;height:1px;background:var(--border)}
 .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(155px,1fr));gap:1px;background:var(--border);border:1px solid var(--border);border-radius:11px;overflow:hidden;margin-bottom:24px}
@@ -56,7 +347,6 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
 .s-lbl{font-size:.68rem;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;font-family:var(--mono);margin-bottom:7px}
 .s-val{font-family:var(--mono);font-size:1.2rem;font-weight:500}
 
-/* PROB */
 .prob-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px;margin-bottom:24px}
 .prob-card{background:var(--surface);border:1px solid var(--border);border-radius:9px;padding:15px 17px;position:relative;overflow:hidden}
 .prob-card::after{content:'';position:absolute;bottom:0;left:0;height:3px;width:var(--w);background:var(--c);border-radius:0 2px 0 0;transition:width .9s cubic-bezier(.16,1,.3,1)}
@@ -64,7 +354,6 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
 .p-pct{font-family:var(--mono);font-size:1.65rem;font-weight:500}
 .p-pct span{font-size:.85rem;opacity:.6}
 
-/* PANELS */
 .full{margin-bottom:18px}
 .two{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:18px}
 @media(max-width:720px){.two{grid-template-columns:1fr}.hdr{flex-direction:column;align-items:flex-start}}
@@ -72,7 +361,6 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
 .p-title{font-family:var(--serif);font-size:1rem;margin-bottom:3px}
 .p-sub{font-size:.72rem;color:var(--muted);font-family:var(--mono);margin-bottom:18px}
 
-/* HISTORY */
 .hist-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(95px,1fr));gap:8px}
 .yr-card{background:var(--surface2);border-radius:7px;padding:10px 12px;text-align:center}
 .yr-lbl{font-size:.65rem;color:var(--muted);font-family:var(--mono);margin-bottom:3px}
@@ -80,7 +368,6 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
 .pos{color:var(--green)}
 .neg{color:var(--red)}
 
-/* CONTRIB */
 .c-row{display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--border);font-size:.83rem}
 .c-row:last-of-type{border-bottom:none}
 .c-lbl{color:var(--muted)}
@@ -88,14 +375,12 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
 .c-total{margin-top:10px;padding-top:10px;border-top:2px solid var(--border);display:flex;justify-content:space-between}
 .c-total .c-val{color:var(--gold);font-size:1.05rem}
 
-/* COMPARE TABLE */
 .cmp-tbl{width:100%;border-collapse:collapse;font-family:var(--mono);font-size:.8rem;margin-top:16px}
 .cmp-tbl th{text-align:left;padding:8px 10px;color:var(--muted);font-size:.65rem;text-transform:uppercase;letter-spacing:.08em;border-bottom:1px solid var(--border)}
 .cmp-tbl td{padding:9px 10px;border-bottom:1px solid rgba(35,43,56,.5)}
 .cmp-tbl tr:last-child td{border-bottom:none}
 .cmp-tbl tr:hover td{background:rgba(255,255,255,.02)}
 
-/* SETTINGS PANEL */
 .settings-toggle{display:flex;align-items:center;gap:14px;cursor:pointer;background:var(--surface2);border:2px solid var(--gold);border-radius:9px;padding:16px 22px;margin-bottom:24px;width:100%;font-family:var(--mono);font-size:.9rem;color:var(--gold);transition:all .2s}
 .settings-toggle:hover{background:var(--surface);border-color:var(--gold);box-shadow:0 0 20px rgba(232,201,126,0.15)}
 .settings-toggle .gear{font-size:1.4rem}
@@ -113,907 +398,1085 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
 .run-btn:hover{background:#f0d898;transform:translateY(-1px)}
 .settings-note{font-size:.72rem;color:var(--muted);font-family:var(--sans);margin-top:12px;line-height:1.5;padding-top:12px;border-top:1px solid var(--border)}
 
+.stress-toggle{display:flex;align-items:center;gap:14px;cursor:pointer;background:var(--surface2);border:2px solid var(--teal);border-radius:9px;padding:16px 22px;margin-bottom:24px;width:100%;font-family:var(--mono);font-size:.9rem;color:var(--teal);transition:all .2s}
+.stress-toggle:hover{background:var(--surface);box-shadow:0 0 20px rgba(64,217,192,0.12)}
+.stress-toggle .arrow{margin-left:auto;transition:transform .3s;font-size:1rem;color:var(--muted)}
+.stress-toggle.open .arrow{transform:rotate(180deg)}
+.stress-panel{background:var(--surface);border:1px solid rgba(64,217,192,.2);border-radius:9px;padding:22px;margin-bottom:24px;display:none}
+.stress-panel.open{display:block}
+.stress-section{margin-bottom:24px;padding-bottom:24px;border-bottom:1px solid var(--border)}
+.stress-section:last-child{margin-bottom:0;padding-bottom:0;border-bottom:none}
+.stress-section-title{font-family:var(--serif);font-size:.95rem;color:var(--teal);margin-bottom:4px}
+.stress-section-sub{font-size:.7rem;color:var(--muted);font-family:var(--mono);margin-bottom:16px}
+
+.slider-group{display:flex;flex-direction:column;gap:6px;margin-bottom:14px}
+.slider-label{display:flex;justify-content:space-between;align-items:center;font-family:var(--mono);font-size:.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}
+.slider-val{color:var(--text);font-size:.88rem;font-weight:500;min-width:60px;text-align:right}
+.slider{-webkit-appearance:none;appearance:none;width:100%;height:4px;border-radius:2px;background:var(--border);outline:none;cursor:pointer}
+.slider::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:16px;height:16px;border-radius:50%;background:var(--teal);cursor:pointer;transition:transform .15s}
+.slider::-webkit-slider-thumb:hover{transform:scale(1.2)}
+.slider.gold::-webkit-slider-thumb{background:var(--gold)}
+.slider.red::-webkit-slider-thumb{background:var(--red)}
+
+.toggle-row{display:flex;align-items:center;gap:12px;margin-bottom:16px}
+.toggle-switch{position:relative;width:44px;height:24px;flex-shrink:0}
+.toggle-switch input{opacity:0;width:0;height:0}
+.toggle-slider{position:absolute;inset:0;background:var(--border);border-radius:24px;cursor:pointer;transition:background .2s}
+.toggle-slider:before{content:'';position:absolute;width:18px;height:18px;left:3px;top:3px;background:var(--muted);border-radius:50%;transition:transform .2s,background .2s}
+.toggle-switch input:checked + .toggle-slider{background:rgba(64,217,192,.2);border:1px solid var(--teal)}
+.toggle-switch input:checked + .toggle-slider:before{transform:translateX(20px);background:var(--teal)}
+.toggle-label{font-family:var(--mono);font-size:.8rem;color:var(--muted)}
+
+.stress-results{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;margin-top:16px}
+.stress-card{background:var(--surface2);border:1px solid var(--border);border-radius:9px;padding:15px 17px}
+.stress-card.warn{border-color:rgba(255,138,126,.3)}
+.sc-label{font-size:.65rem;color:var(--muted);font-family:var(--mono);text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px}
+.sc-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;font-size:.8rem}
+.sc-key{color:var(--muted);font-family:var(--mono)}
+.sc-v{font-family:var(--mono);font-weight:500}
+.sc-delta{font-size:.7rem;font-family:var(--mono);padding:2px 6px;border-radius:4px;margin-left:6px}
+.sc-delta.neg{background:rgba(255,138,126,.15);color:var(--red)}
+
+.glide-indicator{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:14px 18px;margin-bottom:16px;display:none}
+.glide-indicator.show{display:block}
+.gi-label{font-size:.65rem;color:var(--teal);font-family:var(--mono);text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px}
+.gi-bar{height:8px;border-radius:4px;background:linear-gradient(to right,var(--teal),var(--blue));margin-bottom:6px}
+.gi-marks{display:flex;justify-content:space-between;font-size:.62rem;color:var(--muted);font-family:var(--mono)}
 
 /* FEEDBACK MODAL */
-.fb-overlay{position:fixed;inset:0;background:rgba(0,0,0,.65);backdrop-filter:blur(4px);z-index:1100;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .25s ease;}
-.fb-overlay.open{opacity:1;pointer-events:auto;}
-.fb-modal{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:28px 30px;width:min(480px,92vw);box-shadow:0 24px 64px rgba(0,0,0,.6);transform:translateY(20px) scale(.97);transition:transform .3s cubic-bezier(.16,1,.3,1);position:relative;}
-.fb-overlay.open .fb-modal{transform:translateY(0) scale(1);}
-.fb-close{position:absolute;top:14px;right:16px;background:none;border:none;color:var(--muted);font-size:1.3rem;cursor:pointer;line-height:1;padding:4px 8px;border-radius:4px;transition:color .15s,background .15s;}
-.fb-close:hover{color:var(--text);background:var(--surface2);}
-.fb-title{font-family:var(--serif);font-size:1.3rem;margin-bottom:4px;}
-.fb-title em{color:var(--gold);font-style:italic;}
-.fb-sub{font-family:var(--mono);font-size:.7rem;color:var(--muted);margin-bottom:22px;letter-spacing:.04em;}
-.fb-group{display:flex;flex-direction:column;gap:6px;margin-bottom:16px;}
-.fb-label{font-family:var(--mono);font-size:.65rem;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;}
-.fb-input,.fb-select,.fb-textarea{background:var(--surface2);border:1px solid var(--border);border-radius:7px;padding:10px 14px;font-family:var(--mono);font-size:.88rem;color:var(--text);width:100%;outline:none;transition:border-color .2s;-webkit-appearance:none;}
-.fb-input:focus,.fb-select:focus,.fb-textarea:focus{border-color:var(--gold);}
-.fb-select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%236b7588' d='M6 8L0 0h12z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;cursor:pointer;}
-.fb-select option{background:var(--surface2);}
-.fb-textarea{resize:vertical;min-height:110px;line-height:1.5;}
-.fb-stars{display:flex;gap:6px;margin-top:2px;}
-.fb-star{font-size:1.4rem;cursor:pointer;color:var(--border);transition:color .15s,transform .15s;}
-.fb-star:hover,.fb-star.lit{color:var(--gold);}
-.fb-star:hover{transform:scale(1.15);}
-.fb-submit{background:var(--gold);color:#0c0f14;border:none;border-radius:7px;padding:12px 24px;font-family:var(--mono);font-size:.88rem;font-weight:500;cursor:pointer;transition:all .2s;width:100%;margin-top:4px;letter-spacing:.04em;}
-.fb-submit:hover{background:#f0d898;transform:translateY(-1px);}
-.fb-submit:disabled{opacity:.5;cursor:not-allowed;transform:none;}
-.fb-success{display:none;text-align:center;padding:20px 0;}
-.fb-success.show{display:block;}
-.fb-success .check{font-size:2.5rem;margin-bottom:12px;}
-.fb-success p{font-family:var(--sans);color:var(--muted);font-size:.9rem;line-height:1.6;}
-.fb-success strong{color:var(--text);}
-/* Feedback trigger button */
-.fb-trigger{display:flex;align-items:center;gap:9px;background:var(--surface2);color:var(--muted);border:1px solid var(--border);border-radius:50px;padding:11px 18px;font-family:var(--mono);font-size:.82rem;font-weight:500;cursor:pointer;transition:all .18s;white-space:nowrap;}
-.fb-trigger:hover{background:var(--surface);color:var(--text);border-color:var(--muted);transform:translateY(-2px);}
+.fb-overlay{position:fixed;inset:0;background:rgba(0,0,0,.65);backdrop-filter:blur(4px);z-index:1100;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .25s ease}
+.fb-overlay.open{opacity:1;pointer-events:auto}
+.fb-modal{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:28px 30px;width:min(480px,92vw);box-shadow:0 24px 64px rgba(0,0,0,.6);transform:translateY(20px) scale(.97);transition:transform .3s cubic-bezier(.16,1,.3,1);position:relative}
+.fb-overlay.open .fb-modal{transform:translateY(0) scale(1)}
+.fb-close{position:absolute;top:14px;right:16px;background:none;border:none;color:var(--muted);font-size:1.3rem;cursor:pointer;line-height:1;padding:4px 8px;border-radius:4px;transition:color .15s,background .15s}
+.fb-close:hover{color:var(--text);background:var(--surface2)}
+.fb-title{font-family:var(--serif);font-size:1.3rem;margin-bottom:4px}
+.fb-title em{color:var(--gold);font-style:italic}
+.fb-sub{font-family:var(--mono);font-size:.7rem;color:var(--muted);margin-bottom:22px;letter-spacing:.04em}
+.fb-group{display:flex;flex-direction:column;gap:6px;margin-bottom:16px}
+.fb-label{font-family:var(--mono);font-size:.65rem;color:var(--muted);text-transform:uppercase;letter-spacing:.1em}
+.fb-input,.fb-select,.fb-textarea{background:var(--surface2);border:1px solid var(--border);border-radius:7px;padding:10px 14px;font-family:var(--mono);font-size:.88rem;color:var(--text);width:100%;outline:none;transition:border-color .2s;-webkit-appearance:none}
+.fb-input:focus,.fb-select:focus,.fb-textarea:focus{border-color:var(--gold)}
+.fb-select{
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%236b7588' d='M6 8L0 0h12z'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;
+  background-position:right 14px center;
+  cursor:pointer
+}
+.fb-select option{background:var(--surface2)}
+.fb-textarea{resize:vertical;min-height:110px;line-height:1.5}
+.fb-stars{display:flex;gap:6px;margin-top:2px}
+.fb-star{font-size:1.4rem;cursor:pointer;color:var(--border);transition:color .15s,transform .15s}
+.fb-star:hover,.fb-star.lit{color:var(--gold)}
+.fb-star:hover{transform:scale(1.15)}
+.fb-submit{background:var(--gold);color:#0c0f14;border:none;border-radius:7px;padding:12px 24px;font-family:var(--mono);font-size:.88rem;font-weight:500;cursor:pointer;transition:all .2s;width:100%;margin-top:4px;letter-spacing:.04em}
+.fb-submit:hover{background:#f0d898;transform:translateY(-1px)}
+.fb-submit:disabled{opacity:.5;cursor:not-allowed;transform:none}
+.fb-success{display:none;text-align:center;padding:20px 0}
+.fb-success.show{display:block}
+.fb-success .check{font-size:2.5rem;margin-bottom:12px}
+.fb-success p{font-family:var(--sans);color:var(--muted);font-size:.9rem;line-height:1.6}
+.fb-success strong{color:var(--text)}
+.fb-trigger{display:flex;align-items:center;gap:9px;background:var(--surface2);color:var(--muted);border:1px solid var(--border);border-radius:50px;padding:11px 18px;font-family:var(--mono);font-size:.82rem;font-weight:500;cursor:pointer;transition:all .18s;white-space:nowrap}
+.fb-trigger:hover{background:var(--surface);color:var(--text);border-color:var(--muted);transform:translateY(-2px)}
 
 @keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
-.hdr,.scn-bar,.banner,.stats{animation:fadeUp .45s ease both}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.hdr,.scn-wrap,.banner,.stats{animation:fadeUp .45s ease both}
+#modePicker{animation:fadeIn .3s ease}
 
 /* FLOATING DONATE */
-.donate-fab{position:fixed;bottom:28px;right:28px;z-index:999;display:flex;flex-direction:column;align-items:flex-end;gap:8px;}
-.donate-panel{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:16px 18px;width:234px;box-shadow:0 8px 32px rgba(0,0,0,.5);opacity:0;transform:translateY(10px) scale(.97);transition:opacity .25s ease,transform .25s ease;pointer-events:none;}
-.donate-panel.show{opacity:1;transform:translateY(0) scale(1);pointer-events:auto;}
-.donate-panel p{margin-bottom:12px;color:var(--text);font-family:var(--sans);font-size:.8rem;line-height:1.55;}
-.donate-links{display:flex;flex-direction:column;gap:7px;}
-.donate-link{display:flex;align-items:center;gap:10px;padding:9px 13px;border-radius:8px;font-family:var(--mono);font-size:.78rem;font-weight:500;text-decoration:none;transition:transform .15s,opacity .15s;white-space:nowrap;}
-.donate-link:hover{transform:translateX(-2px);opacity:.85;}
-.donate-link.paypal{background:#003087;color:#fff;}
-.donate-link.cashapp{background:#00d64f;color:#0c0f14;}
-.donate-link.bmac{background:#ffdd00;color:#0c0f14;}
-.donate-link .d-icon{font-size:1rem;width:18px;text-align:center;flex-shrink:0;}
-.donate-toggle{display:flex;align-items:center;gap:9px;background:var(--gold);color:#0c0f14;border:none;border-radius:50px;padding:13px 20px;font-family:var(--mono);font-size:.85rem;font-weight:500;cursor:pointer;box-shadow:0 4px 20px rgba(232,201,126,.3);transition:transform .18s,box-shadow .18s,background .18s;white-space:nowrap;}
-.donate-toggle:hover{background:#f0d898;transform:translateY(-2px);box-shadow:0 6px 28px rgba(232,201,126,.45);}
-.donate-toggle:active{transform:translateY(0);}
+.donate-fab{position:fixed;bottom:28px;right:28px;z-index:999;display:flex;flex-direction:column;align-items:flex-end;gap:8px}
+.donate-panel{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:16px 18px;width:234px;box-shadow:0 8px 32px rgba(0,0,0,.5);opacity:0;transform:translateY(10px) scale(.97);transition:opacity .25s ease,transform .25s ease;pointer-events:none}
+.donate-panel.show{opacity:1;transform:translateY(0) scale(1);pointer-events:auto}
+.donate-panel p{margin-bottom:12px;color:var(--text);font-family:var(--sans);font-size:.8rem;line-height:1.55}
+.donate-links{display:flex;flex-direction:column;gap:7px}
+.donate-link{display:flex;align-items:center;gap:10px;padding:9px 13px;border-radius:8px;font-family:var(--mono);font-size:.78rem;font-weight:500;text-decoration:none;transition:transform .15s,opacity .15s;white-space:nowrap}
+.donate-link:hover{transform:translateX(-2px);opacity:.85}
+.donate-link.paypal{background:#003087;color:#fff}
+.donate-link.cashapp{background:#00d64f;color:#0c0f14}
+.donate-link.bmac{background:#ffdd00;color:#0c0f14}
+.donate-link .d-icon{font-size:1rem;width:18px;text-align:center;flex-shrink:0}
+.donate-toggle{display:flex;align-items:center;gap:9px;background:var(--gold);color:#0c0f14;border:none;border-radius:50px;padding:13px 20px;font-family:var(--mono);font-size:.85rem;font-weight:500;cursor:pointer;box-shadow:0 4px 20px rgba(232,201,126,.3);transition:transform .18s,box-shadow .18s,background .18s;white-space:nowrap}
+.donate-toggle:hover{background:#f0d898;transform:translateY(-2px);box-shadow:0 6px 28px rgba(232,201,126,.45)}
+.donate-toggle:active{transform:translateY(0)}
 </style>
 </head>
 <body>
-<div class="wrap">
 
-  <header class="hdr">
-    <div>
-      <h1>Retire<em>Cast</em></h1>
-      <div style="font-family:var(--mono);font-size:.72rem;color:var(--muted);letter-spacing:.12em;text-transform:uppercase;margin-top:5px;margin-bottom:6px">Monte Carlo Retirement Forecast</div>
-      <div class="hdr-sub" id="hdrSub">$7,500/yr · Monte Carlo 10,000 paths · 2026–2050 · Starting $8,492.71</div>
-    </div>
-    <div class="hdr-right">
-      <div class="hdr-val" id="hdrVal">$8,492.71</div>
-      <div class="hdr-lbl">Starting Balance</div>
-    </div>
-  </header>
+<div id="modePicker">
+  <h1>Retire<em>Cast</em></h1>
+  <p class="tagline">Monte Carlo Retirement Forecast</p>
 
-  <!-- 2026 LIMITS BANNER -->
-  <div style="background:var(--surface);border:1px solid var(--border);border-radius:9px;padding:12px 18px;margin-bottom:24px;font-family:var(--mono);font-size:.75rem;display:flex;gap:24px;flex-wrap:wrap;align-items:center">
-    <span style="color:var(--muted);text-transform:uppercase;letter-spacing:.08em;font-size:.65rem">2026 Post-Tax Limits (IRS)</span>
-    <span style="color:var(--gold)">Roth IRA <strong>$7,500</strong> <span style="color:var(--muted);font-size:.68rem">(under 50)</span></span>
-    <span style="color:var(--blue)">Roth IRA 50+ <strong>$8,600</strong></span>
-    <span style="color:var(--green)">Roth 401(k) <strong>$24,500</strong></span>
-    <span style="color:var(--purple)">Roth IRA + 401(k) <strong>$32,000</strong></span>
-    <span style="color:var(--muted);font-size:.65rem;margin-left:auto">Numbers not adjusted for tax · Verify at IRS.gov</span>
-    <div style="width:100%;padding-top:10px;border-top:1px solid var(--border);color:var(--muted);font-size:.68rem;line-height:1.5">
-      ⚠ <strong style="color:var(--text)">Tax disclaimer:</strong> Projections do not account for taxes on withdrawals from 401(k) or other tax-deferred accounts. Traditional 401(k) and IRA withdrawals are taxed as ordinary income in retirement. Roth accounts grow and withdraw tax-free. Actual after-tax retirement income will differ — consult a tax advisor for your specific situation.
+  <div class="mode-cards">
+    <div class="mode-card beginner" onclick="selectMode('beginner')">
+      <div class="mode-icon">🌱</div>
+      <div class="mode-title">Just Starting Out</div>
+      <div class="mode-desc">Simple inputs, plain English results. See your likely retirement range without the math.</div>
+      <div class="mode-tags">
+        <span class="mode-tag">3 inputs</span>
+        <span class="mode-tag">plain language</span>
+        <span class="mode-tag">1 chart</span>
+      </div>
+      <div class="mode-cta">Get started →</div>
+    </div>
+
+    <div class="mode-card advanced" onclick="selectMode('advanced')">
+      <div class="mode-icon">📈</div>
+      <div class="mode-title">I Know Investing</div>
+      <div class="mode-desc">Full Monte Carlo with 6 scenarios, block bootstrap, stress testing, and glide path modeling.</div>
+      <div class="mode-tags">
+        <span class="mode-tag">10,000 paths</span>
+        <span class="mode-tag">6 scenarios</span>
+        <span class="mode-tag">stress test</span>
+      </div>
+      <div class="mode-cta">Full dashboard →</div>
     </div>
   </div>
-  
-  <!-- EDUCATIONAL DISCLAIMER -->
-<div style="background:var(--surface2);border:1px solid var(--border);border-left:3px solid var(--gold);border-radius:9px;padding:12px 18px;margin-bottom:16px;font-family:var(--sans);font-size:.72rem;color:var(--muted);line-height:1.6;text-align:center">
-  ⚠ <strong style="color:var(--text)">Disclaimer:</strong> For educational and entertainment purposes only. Not financial advice. Not affiliated with Vanguard, Fidelity, BlackRock, or any financial institution. Past market performance does not guarantee future results. Consult a licensed financial advisor before making investment decisions.
+
+  <p class="disclaimer">For educational and entertainment purposes only. Not financial advice. Past market performance does not guarantee future results.</p>
 </div>
-<!-- MODELING ASSUMPTIONS -->
-<details style="background:var(--surface);border:1px solid var(--border);border-radius:9px;padding:12px 18px;margin-bottom:16px;font-family:var(--sans);font-size:.72rem;color:var(--muted);line-height:1.6">
-  <summary style="cursor:pointer;color:var(--gold);font-family:var(--mono);font-size:.75rem;letter-spacing:.05em">
-    ▶ View Modeling Assumptions
-  </summary>
 
-  <div style="margin-top:10px">
+<div class="wrap" id="mainWrap">
 
-    <div style="margin-bottom:8px">
-      <strong style="color:var(--text)">Simulation Framework</strong><br>
-      • 10,000 Monte Carlo paths simulated across the selected time horizon<br>
-      • Annual contributions added at the end of each period<br>
-    </div>
-
-    <div style="margin-bottom:8px">
-      <strong style="color:var(--text)">Return Modeling</strong><br>
-      • Parametric scenarios assume normally distributed returns (μ, σ)<br>
-      • Bootstrap scenario resamples actual S&amp;P 500 returns (1928–2025)<br>
-      • Captures historical volatility, drawdowns, and fat-tail behavior<br>
-    </div>
-
-    <div style="margin-bottom:8px">
-      <strong style="color:var(--text)">Inflation Adjustment</strong><br>
-      • Constant annual inflation rate applied to compute real (today’s dollar) values<br>
-      • Real values represent purchasing power at the end of the simulation horizon<br>
-    </div>
-
-    <div>
-      <strong style="color:var(--text)">Limitations</strong><br>
-      • Does not model taxes, fees, or account-specific withdrawal rules<br>
-      • Assumes constant contribution behavior and no market timing<br>
-      • Results are probabilistic estimates, not guarantees of future performance<br>
-    </div>
-
+  <div class="mode-bar">
+    <div class="mode-bar-label" id="modeBarLabel">Mode: <strong>—</strong></div>
+    <button class="mode-switch-btn" onclick="returnToPicker()">⇄ Switch Mode</button>
   </div>
-</details>
 
-  <!-- SETTINGS TOGGLE (FIX: moved outside the limits banner div) -->
-  <button class="settings-toggle" id="settingsToggle" onclick="toggleSettings()">
-    <span class="gear">⚙</span>
-    <span>Adjust Your Scenario</span>
-    <span style="font-size:.72rem;color:var(--muted)">Customize Your Financial Inputs</span>
-    <span class="arrow">▼</span>
-  </button>
-
-  <!-- SETTINGS PANEL -->
-  <div class="settings-panel" id="settingsPanel">
-    <!-- PORTFOLIO + TIMELINE -->
-    <div style="font-family:var(--mono);font-size:.68rem;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;margin-bottom:12px">Portfolio &amp; Timeline</div>
-    <div class="settings-grid" style="margin-bottom:20px">
-      <div class="inp-group">
-        <label class="inp-label">Starting Balance</label>
-        <input class="inp-field" id="inpStart" type="number" value="8492.71" step="100">
-        <span class="inp-hint">Your total current portfolio value</span>
-      </div>
-      <div class="inp-group">
-        <label class="inp-label">Start Year</label>
-        <input class="inp-field" id="inpStartYear" type="number" value="2026" step="1" min="2024" max="2040">
-        <span class="inp-hint">First year of simulation</span>
-      </div>
-      <div class="inp-group">
-        <label class="inp-label">End Year</label>
-        <input class="inp-field" id="inpEndYear" type="number" value="2050" step="1" min="2030" max="2070">
-        <span class="inp-hint">Target retirement year</span>
-      </div>
+  <div id="beginnerUI">
+    <div class="beg-hdr">
+      <h1>Retire<em>Cast</em></h1>
+      <p>Answer three questions and see what your retirement could look like.</p>
     </div>
 
-    <!-- ANNUAL CONTRIBUTIONS BY ACCOUNT -->
-    <div style="font-family:var(--mono);font-size:.68rem;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;margin-bottom:12px">Annual Contributions by Account</div>
-    <div class="settings-grid" style="margin-bottom:16px">
-      <div class="inp-group">
-        <label class="inp-label" style="color:var(--gold)">Roth IRA</label>
-        <input class="inp-field contrib-input" id="inpRoth" type="number" value="7500" step="100" oninput="updateTotal()">
-        <span class="inp-hint">2026 max: $7,500 (under 50) · $8,600 (50+)</span>
+    <div class="beg-form">
+      <div class="beg-field">
+        <label class="beg-label">How much have you saved so far?</label>
+        <span class="beg-hint">All accounts combined — 401k, IRA, brokerage, savings</span>
+        <div class="beg-prefix">
+          <input class="beg-input" id="begSavings" type="number" value="10000" min="0" step="1000" placeholder="0">
+        </div>
       </div>
-      <div class="inp-group">
-        <label class="inp-label" style="color:var(--blue)">401(k) / Roth 401(k)</label>
-        <input class="inp-field contrib-input" id="inp401k" type="number" value="0" step="100" oninput="updateTotal()">
-        <span class="inp-hint">2026 max: $24,500 employee · Pre or post-tax</span>
+
+      <div class="beg-field">
+        <label class="beg-label">How much will you save each year?</label>
+        <span class="beg-hint">Your total annual contributions across all accounts</span>
+        <div class="beg-prefix">
+          <input class="beg-input" id="begContrib" type="number" value="6000" min="0" step="500" placeholder="0">
+        </div>
       </div>
-      <div class="inp-group">
-        <label class="inp-label" style="color:var(--green)">Taxable Brokerage</label>
-        <input class="inp-field contrib-input" id="inpTaxable" type="number" value="0" step="100" oninput="updateTotal()">
-        <span class="inp-hint">No limit · Capital gains tax applies on withdrawal</span>
+
+      <div class="beg-field">
+        <label class="beg-label">How many years until you retire?</label>
+        <span class="beg-hint">E.g. if you're 35 and want to retire at 65, enter 30</span>
+        <input class="beg-input" id="begYears" type="number" value="30" min="1" max="50" step="1" style="padding-left:14px">
       </div>
-      <div class="inp-group">
-        <label class="inp-label" style="color:var(--purple)">Other (HSA, 403b, etc.)</label>
-        <input class="inp-field contrib-input" id="inpOther" type="number" value="0" step="100" oninput="updateTotal()">
-        <span class="inp-hint">Any additional tax-advantaged contributions</span>
-      </div>
+
+      <button class="beg-run" onclick="runBeginner()">See My Retirement Forecast →</button>
     </div>
 
-    <!-- TOTAL -->
-    <div style="background:var(--surface2);border:1px solid var(--border);border-radius:7px;padding:14px 18px;margin-bottom:20px;display:flex;justify-content:space-between;align-items:center">
-      <span style="font-family:var(--mono);font-size:.8rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em">Total Annual Contribution</span>
-      <span style="font-family:var(--mono);font-size:1.3rem;font-weight:500;color:var(--gold)" id="totalContribDisplay">$7,500</span>
-    </div>
-
-    <div style="font-size:.68rem;color:var(--muted);font-family:var(--sans);margin-bottom:16px;padding:10px 14px;background:var(--surface2);border-radius:6px;border-left:3px solid var(--red);line-height:1.6">
-      ⚠ <strong style="color:var(--text)">Tax note:</strong> 401(k) projections show pre-tax growth. Withdrawals will be taxed as ordinary income. Roth accounts grow and withdraw tax-free. Taxable brokerage subject to capital gains. Numbers not adjusted for tax impact.
-    </div>
-
-    <!-- INFLATION RATE -->
-    <div style="font-family:var(--mono);font-size:.68rem;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;margin-bottom:12px;margin-top:4px">Inflation Assumption</div>
-    <div class="settings-grid" style="margin-bottom:20px">
-      <div class="inp-group">
-        <label class="inp-label" style="color:var(--blue)">Annual Inflation Rate</label>
-        <input class="inp-field" id="inpInflation" type="number" value="2.9" step="0.1" min="0" max="15">
-        <span class="inp-hint">Default 2.9% — Fed long-run target ~2.0–3.0%</span>
+    <div class="beg-results" id="begResults">
+      <div class="beg-summary">
+        <div class="beg-summary-title">Your retirement outlook in a typical market</div>
+        <div class="beg-range">
+          <div class="beg-range-item">
+            <div class="bri-label">Tough Years</div>
+            <div class="bri-val" id="begP10" style="color:var(--red)">—</div>
+            <div class="bri-sub">1-in-10 chance of this or less</div>
+          </div>
+          <div class="beg-range-item">
+            <div class="bri-label">Most Likely</div>
+            <div class="bri-val" id="begP50" style="color:var(--gold)">—</div>
+            <div class="bri-sub">Median outcome</div>
+          </div>
+          <div class="beg-range-item">
+            <div class="bri-label">Great Years</div>
+            <div class="bri-val" id="begP90" style="color:var(--green)">—</div>
+            <div class="bri-sub">1-in-10 chance of this or more</div>
+          </div>
+        </div>
+        <div class="beg-sentence" id="begSentence">—</div>
       </div>
-      <div class="inp-group">
-        <label class="inp-label" style="color:var(--green)">Safe Withdrawal Rate</label>
-        <input class="inp-field" id="inpSWR" type="number" value="4.0" step="0.1" min="1" max="10">
-        <span class="inp-hint">Classic "4% rule" — annual withdrawal as % of portfolio</span>
-      </div>
-    </div>
 
-    <button class="run-btn" onclick="applySettings()">▶ Run Simulation</button>
-    <div class="settings-note">
-      Numbers stay in your browser — nothing is saved or sent anywhere. Change any field and hit Run to re-simulate all 10,000 paths instantly.
+      <div class="beg-monthly">
+        <div>
+          <div class="bm-label">Estimated monthly income (most likely scenario)</div>
+          <div style="font-size:.72rem;color:var(--muted);font-family:var(--mono);margin-top:2px">Based on 4% withdrawal rule · today's dollars</div>
+        </div>
+        <div class="bm-val" id="begMonthly">—</div>
+      </div>
+
+      <div class="beg-chart-wrap">
+        <div class="beg-chart-title">Your range of possible futures</div>
+        <div class="beg-chart-sub">10,000 simulated paths · shaded band shows where most outcomes land</div>
+        <canvas id="begChart" height="260"></canvas>
+      </div>
+
+      <div class="beg-note">
+        ⚠ For educational purposes only. Not financial advice. Numbers assume a typical stock market average (~5.8% annual return). Actual results depend on many factors not modeled here — inflation, taxes, fees, and life events.
+      </div>
+
+      <div class="beg-upgrade">
+        Want to see different market scenarios, stress test a crash, or model a glide path?<br>
+        <button onclick="selectMode('advanced')" style="margin-top:8px;display:inline-block">Switch to Advanced Mode →</button>
+      </div>
     </div>
   </div>
 
-  <!-- SCENARIO TABS -->
-  <div class="scn-bar" id="scnBar"></div>
-
-  <!-- ACTIVE SCENARIO BANNER -->
-  <div class="banner">
-    <div class="b-item"><strong>Scenario:</strong> <span id="bScen">—</span></div>
-    <div class="b-item"><strong>Return μ:</strong> <span id="bRet">—</span></div>
-    <div class="b-item"><strong>Volatility σ:</strong> <span id="bVol">—</span></div>
-    <div class="b-item"><strong>Contribution:</strong> <span id="bContrib">$7,500/yr</span></div>
-    <div class="b-item"><strong>Inflation:</strong> <span id="bInflation">2.9%/yr</span></div>
-    <div class="b-note" id="bNote">—</div>
-  </div>
-
-  <p class="sec-hdr" id="outcomeHdr">Projected Outcomes by End Year</p>
-  <div class="stats">
-    <div class="stat"><div class="s-lbl">Mean</div><div class="s-val" id="sMean" style="color:var(--gold)">—</div></div>
-    <div class="stat"><div class="s-lbl">Median</div><div class="s-val" id="sP50">—</div></div>
-    <div class="stat"><div class="s-lbl">10th %ile</div><div class="s-val" id="sP10" style="color:var(--red)">—</div></div>
-    <div class="stat"><div class="s-lbl">25th %ile</div><div class="s-val" id="sP25" style="color:var(--blue)">—</div></div>
-    <div class="stat"><div class="s-lbl">75th %ile</div><div class="s-val" id="sP75">—</div></div>
-    <div class="stat"><div class="s-lbl">90th %ile</div><div class="s-val" id="sP90" style="color:var(--green)">—</div></div>
-  </div>
-
-  <!-- INFLATION-ADJUSTED SECTION -->
-  <p class="sec-hdr" id="realHdr">Inflation-Adjusted (Real) Values · Today's Dollars</p>
-  <div class="stats" style="margin-bottom:10px">
-    <div class="stat"><div class="s-lbl">Real Median</div><div class="s-val" id="rP50" style="color:var(--blue)">—</div></div>
-    <div class="stat"><div class="s-lbl">Real 10th %ile</div><div class="s-val" id="rP10" style="color:var(--red)">—</div></div>
-    <div class="stat"><div class="s-lbl">Real 25th %ile</div><div class="s-val" id="rP25">—</div></div>
-    <div class="stat"><div class="s-lbl">Real 75th %ile</div><div class="s-val" id="rP75">—</div></div>
-    <div class="stat"><div class="s-lbl">Real 90th %ile</div><div class="s-val" id="rP90" style="color:var(--green)">—</div></div>
-    <div class="stat"><div class="s-lbl">Inflation Factor</div><div class="s-val" id="rFactor" style="color:var(--muted)">—</div></div>
-  </div>
-  <!-- WITHDRAWAL CAPACITY -->
-  <div style="background:var(--surface);border:1px solid var(--border);border-radius:11px;padding:20px 22px;margin-bottom:24px">
-    <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:12px;margin-bottom:16px">
+  <div id="advancedUI">
+    <header class="hdr">
       <div>
-        <div style="font-family:var(--serif);font-size:1rem;margin-bottom:3px">Annual Withdrawal Capacity</div>
-        <div style="font-family:var(--mono);font-size:.72rem;color:var(--muted)" id="swrSubLabel">Based on 4.0% safe withdrawal rate</div>
+        <h1>Retire<em>Cast</em></h1>
+        <div style="font-family:var(--mono);font-size:.72rem;color:var(--muted);letter-spacing:.12em;text-transform:uppercase;margin-top:5px;margin-bottom:6px">Monte Carlo Retirement Forecast</div>
+        <div class="hdr-sub" id="hdrSub">$7,500/yr · Monte Carlo 10,000 paths · 2026–2050 · Starting $8,492.71</div>
       </div>
-      <div style="font-size:.68rem;color:var(--muted);font-family:var(--mono);background:var(--surface2);padding:6px 12px;border-radius:6px;border:1px solid var(--border)">
-        Nominal &amp; inflation-adjusted (today's $)
+      <div class="hdr-right">
+        <div class="hdr-val" id="hdrVal">$8,492.71</div>
+        <div class="hdr-lbl">Starting Balance</div>
       </div>
-    </div>
-    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:1px;background:var(--border);border-radius:8px;overflow:hidden">
-      <div style="background:var(--surface2);padding:16px 18px">
-        <div style="font-size:.65rem;color:var(--muted);font-family:var(--mono);text-transform:uppercase;letter-spacing:.1em;margin-bottom:6px">Median Nominal</div>
-        <div style="font-family:var(--mono);font-size:1.15rem;font-weight:500;color:var(--gold)" id="wNomMed">—</div>
-        <div style="font-size:.62rem;color:var(--muted);margin-top:4px">per year</div>
-      </div>
-      <div style="background:var(--surface2);padding:16px 18px">
-        <div style="font-size:.65rem;color:var(--muted);font-family:var(--mono);text-transform:uppercase;letter-spacing:.1em;margin-bottom:6px">Median Real</div>
-        <div style="font-family:var(--mono);font-size:1.15rem;font-weight:500;color:var(--blue)" id="wRealMed">—</div>
-        <div style="font-size:.62rem;color:var(--muted);margin-top:4px">per year · today's $</div>
-      </div>
-      <div style="background:var(--surface2);padding:16px 18px">
-        <div style="font-size:.65rem;color:var(--muted);font-family:var(--mono);text-transform:uppercase;letter-spacing:.1em;margin-bottom:6px">10th %ile Real</div>
-        <div style="font-family:var(--mono);font-size:1.15rem;font-weight:500;color:var(--red)" id="wReal10">—</div>
-        <div style="font-size:.62rem;color:var(--muted);margin-top:4px">per year · today's $</div>
-      </div>
-      <div style="background:var(--surface2);padding:16px 18px">
-        <div style="font-size:.65rem;color:var(--muted);font-family:var(--mono);text-transform:uppercase;letter-spacing:.1em;margin-bottom:6px">90th %ile Real</div>
-        <div style="font-family:var(--mono);font-size:1.15rem;font-weight:500;color:var(--green)" id="wReal90">—</div>
-        <div style="font-size:.62rem;color:var(--muted);margin-top:4px">per year · today's $</div>
-      </div>
-      <div style="background:var(--surface2);padding:16px 18px">
-        <div style="font-size:.65rem;color:var(--muted);font-family:var(--mono);text-transform:uppercase;letter-spacing:.1em;margin-bottom:6px">Monthly Real</div>
-        <div style="font-family:var(--mono);font-size:1.15rem;font-weight:500;color:var(--purple)" id="wRealMonth">—</div>
-        <div style="font-size:.62rem;color:var(--muted);margin-top:4px">per month · today's $</div>
+    </header>
+
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:9px;padding:12px 18px;margin-bottom:24px;font-family:var(--mono);font-size:.75rem;display:flex;gap:24px;flex-wrap:wrap;align-items:center">
+      <span style="color:var(--muted);text-transform:uppercase;letter-spacing:.08em;font-size:.65rem">2026 Post-Tax Limits (IRS)</span>
+      <span style="color:var(--gold)">Roth IRA <strong>$7,500</strong> <span style="color:var(--muted);font-size:.68rem">(under 50)</span></span>
+      <span style="color:var(--blue)">Roth IRA 50+ <strong>$8,600</strong></span>
+      <span style="color:var(--green)">Roth 401(k) <strong>$24,500</strong></span>
+      <span style="color:var(--purple)">Roth IRA + 401(k) <strong>$32,000</strong></span>
+      <span style="color:var(--muted);font-size:.65rem;margin-left:auto">Numbers not adjusted for tax · Verify at IRS.gov</span>
+      <div style="width:100%;padding-top:10px;border-top:1px solid var(--border);color:var(--muted);font-size:.68rem;line-height:1.5">
+        ⚠ <strong style="color:var(--text)">Tax disclaimer:</strong> Projections do not account for taxes on withdrawals from 401(k) or other tax-deferred accounts. Traditional 401(k) and IRA withdrawals are taxed as ordinary income in retirement. Roth accounts grow and withdraw tax-free. Actual after-tax retirement income will differ — consult a tax advisor for your specific situation.
       </div>
     </div>
-    <div style="margin-top:12px;padding:10px 14px;background:var(--surface2);border-radius:6px;border-left:3px solid var(--blue);font-size:.7rem;color:var(--muted);font-family:var(--sans);line-height:1.55">
-      ℹ The 4% rule (Bengen 1994) suggests withdrawing 4% of your portfolio in year 1, then adjusting for inflation each year — historically lasting 30+ years. Real values use your inflation assumption to show purchasing power in today's dollars. Not financial advice.
+
+    <div style="background:var(--surface2);border:1px solid var(--border);border-left:3px solid var(--gold);border-radius:9px;padding:12px 18px;margin-bottom:16px;font-family:var(--sans);font-size:.72rem;color:var(--muted);line-height:1.6;text-align:center">
+      ⚠ <strong style="color:var(--text)">Disclaimer:</strong> For educational and entertainment purposes only. Not financial advice. Not affiliated with Vanguard, Fidelity, BlackRock, or any financial institution. Past market performance does not guarantee future results. Consult a licensed financial advisor before making investment decisions.
+    </div>
+
+    <details style="background:var(--surface);border:1px solid var(--border);border-radius:9px;padding:12px 18px;margin-bottom:16px;font-family:var(--sans);font-size:.72rem;color:var(--muted);line-height:1.6">
+      <summary style="cursor:pointer;color:var(--gold);font-family:var(--mono);font-size:.75rem;letter-spacing:.05em">▶ ▶ View Modeling Assumptions</summary>
+      <div style="margin-top:10px">
+        <div style="margin-bottom:8px"><strong style="color:var(--text)">Simulation Framework</strong><br>• 10,000 Monte Carlo paths · Annual contributions added at end of period · HIST/HIST-R use block bootstrap (size 4)</div>
+        <div style="margin-bottom:8px"><strong style="color:var(--text)">Return Modeling</strong><br>• BEAR/BASE/BULL/OPT: normally distributed returns (μ, σ) · HIST: block bootstrap S&amp;P 500 1928–2025 · HIST-R: block bootstrap 2000–2025</div>
+        <div style="margin-bottom:8px"><strong style="color:var(--text)">Glide Path</strong><br>• σ tapers linearly from start to end σ · μ optionally tapers to bond-like drift</div>
+        <div><strong style="color:var(--text)">Limitations</strong><br>• No taxes, fees, or withdrawal rules modeled · Assumes constant contributions · Probabilistic estimates only</div>
+      </div>
+    </details>
+
+    <button class="settings-toggle" id="settingsToggle" onclick="toggleSettings()">
+      <span class="gear">⚙</span>
+      <span>Adjust Your Scenario</span>
+      <span style="font-size:.72rem;color:var(--muted)">Customize Your Financial Inputs</span>
+      <span class="arrow">▼</span>
+    </button>
+
+    <div class="settings-panel" id="settingsPanel">
+      <div style="font-family:var(--mono);font-size:.68rem;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;margin-bottom:12px">Portfolio &amp; Timeline</div>
+      <div class="settings-grid" style="margin-bottom:20px">
+        <div class="inp-group">
+          <label class="inp-label">Starting Balance</label>
+          <input class="inp-field" id="inpStart" type="number" value="8492.71" step="100" min="0">
+          <span class="inp-hint">Your total current portfolio value</span>
+        </div>
+        <div class="inp-group">
+          <label class="inp-label">Start Year</label>
+          <input class="inp-field" id="inpStartYear" type="number" value="2026" step="1" min="2024" max="2040">
+          <span class="inp-hint">First year of simulation</span>
+        </div>
+        <div class="inp-group">
+          <label class="inp-label">End Year</label>
+          <input class="inp-field" id="inpEndYear" type="number" value="2050" step="1" min="2030" max="2070">
+          <span class="inp-hint">Target retirement year</span>
+        </div>
+      </div>
+
+      <div style="font-family:var(--mono);font-size:.68rem;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;margin-bottom:12px">Annual Contributions by Account</div>
+      <div class="settings-grid" style="margin-bottom:16px">
+        <div class="inp-group">
+          <label class="inp-label" style="color:var(--gold)">Roth IRA</label>
+          <input class="inp-field contrib-input" id="inpRoth" type="number" value="7500" step="100" min="0" oninput="updateTotal()">
+          <span class="inp-hint">2026 max: $7,500 (under 50) · $8,600 (50+)</span>
+        </div>
+        <div class="inp-group">
+          <label class="inp-label" style="color:var(--blue)">401(k) / Roth 401(k)</label>
+          <input class="inp-field contrib-input" id="inp401k" type="number" value="0" step="100" min="0" oninput="updateTotal()">
+          <span class="inp-hint">2026 max: $24,500 employee · Pre or post-tax</span>
+        </div>
+        <div class="inp-group">
+          <label class="inp-label" style="color:var(--green)">Taxable Brokerage</label>
+          <input class="inp-field contrib-input" id="inpTaxable" type="number" value="0" step="100" min="0" oninput="updateTotal()">
+          <span class="inp-hint">No limit · Capital gains tax applies on withdrawal</span>
+        </div>
+        <div class="inp-group">
+          <label class="inp-label" style="color:var(--purple)">Other (HSA, 403b, etc.)</label>
+          <input class="inp-field contrib-input" id="inpOther" type="number" value="0" step="100" min="0" oninput="updateTotal()">
+          <span class="inp-hint">Any additional tax-advantaged contributions</span>
+        </div>
+      </div>
+
+      <div style="background:var(--surface2);border:1px solid var(--border);border-radius:7px;padding:14px 18px;margin-bottom:20px;display:flex;justify-content:space-between;align-items:center">
+        <span style="font-family:var(--mono);font-size:.8rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em">Total Annual Contribution</span>
+        <span style="font-family:var(--mono);font-size:1.3rem;font-weight:500;color:var(--gold)" id="totalContribDisplay">$7,500</span>
+      </div>
+
+      <div style="font-size:.68rem;color:var(--muted);font-family:var(--sans);margin-bottom:16px;padding:10px 14px;background:var(--surface2);border-radius:6px;border-left:3px solid var(--red);line-height:1.6">
+        ⚠ <strong style="color:var(--text)">Tax note:</strong> 401(k) projections show pre-tax growth. Withdrawals will be taxed as ordinary income. Roth accounts grow and withdraw tax-free. Taxable brokerage subject to capital gains.
+      </div>
+
+      <div style="font-family:var(--mono);font-size:.68rem;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;margin-bottom:12px;margin-top:4px">Inflation &amp; Withdrawal</div>
+      <div class="settings-grid" style="margin-bottom:20px">
+        <div class="inp-group">
+          <label class="inp-label" style="color:var(--blue)">Annual Inflation Rate</label>
+          <input class="inp-field" id="inpInflation" type="number" value="2.9" step="0.1" min="0" max="15">
+          <span class="inp-hint">Default 2.9% — Fed long-run target ~2.0–3.0%</span>
+        </div>
+        <div class="inp-group">
+          <label class="inp-label" style="color:var(--green)">Safe Withdrawal Rate</label>
+          <input class="inp-field" id="inpSWR" type="number" value="4.0" step="0.1" min="1" max="10">
+          <span class="inp-hint">Classic "4% rule" — annual withdrawal as % of portfolio</span>
+        </div>
+      </div>
+
+      <button class="run-btn" onclick="applySettings()">▶ Run Simulation</button>
+      <div class="settings-note">Numbers stay in your browser — nothing is saved or sent anywhere.</div>
+    </div>
+
+    <div class="scn-wrap"><div class="scn-bar" id="scnBar"></div></div>
+
+    <div class="banner">
+      <div class="b-item"><strong>Scenario:</strong> <span id="bScen">—</span></div>
+      <div class="b-item"><strong>Return μ:</strong> <span id="bRet">—</span></div>
+      <div class="b-item"><strong>Volatility σ:</strong> <span id="bVol">—</span></div>
+      <div class="b-item"><strong>Contribution:</strong> <span id="bContrib">$7,500/yr</span></div>
+      <div class="b-item"><strong>Inflation:</strong> <span id="bInflation">2.9%/yr</span></div>
+      <div class="b-note" id="bNote">—</div>
+    </div>
+
+    <p class="sec-hdr" id="outcomeHdr">Projected Outcomes by End Year</p>
+    <div class="stats">
+      <div class="stat"><div class="s-lbl">Mean</div><div class="s-val" id="sMean" style="color:var(--gold)">—</div></div>
+      <div class="stat"><div class="s-lbl">Median</div><div class="s-val" id="sP50">—</div></div>
+      <div class="stat"><div class="s-lbl">10th %ile</div><div class="s-val" id="sP10" style="color:var(--red)">—</div></div>
+      <div class="stat"><div class="s-lbl">25th %ile</div><div class="s-val" id="sP25" style="color:var(--blue)">—</div></div>
+      <div class="stat"><div class="s-lbl">75th %ile</div><div class="s-val" id="sP75">—</div></div>
+      <div class="stat"><div class="s-lbl">90th %ile</div><div class="s-val" id="sP90" style="color:var(--green)">—</div></div>
+    </div>
+
+    <p class="sec-hdr" id="realHdr">Inflation-Adjusted (Real) Values · Today's Dollars</p>
+    <div class="stats" style="margin-bottom:10px">
+      <div class="stat"><div class="s-lbl">Real Median</div><div class="s-val" id="rP50" style="color:var(--blue)">—</div></div>
+      <div class="stat"><div class="s-lbl">Real 10th %ile</div><div class="s-val" id="rP10" style="color:var(--red)">—</div></div>
+      <div class="stat"><div class="s-lbl">Real 25th %ile</div><div class="s-val" id="rP25">—</div></div>
+      <div class="stat"><div class="s-lbl">Real 75th %ile</div><div class="s-val" id="rP75">—</div></div>
+      <div class="stat"><div class="s-lbl">Real 90th %ile</div><div class="s-val" id="rP90" style="color:var(--green)">—</div></div>
+      <div class="stat"><div class="s-lbl">Inflation Factor</div><div class="s-val" id="rFactor" style="color:var(--muted)">—</div></div>
+    </div>
+
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:11px;padding:20px 22px;margin-bottom:24px">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:12px;margin-bottom:16px">
+        <div>
+          <div style="font-family:var(--serif);font-size:1rem;margin-bottom:3px">Annual Withdrawal Capacity</div>
+          <div style="font-family:var(--mono);font-size:.72rem;color:var(--muted)" id="swrSubLabel">Based on 4.0% safe withdrawal rate</div>
+        </div>
+        <div style="font-size:.68rem;color:var(--muted);font-family:var(--mono);background:var(--surface2);padding:6px 12px;border-radius:6px;border:1px solid var(--border)">Nominal &amp; inflation-adjusted (today's $)</div>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:1px;background:var(--border);border-radius:8px;overflow:hidden">
+        <div style="background:var(--surface2);padding:16px 18px"><div style="font-size:.65rem;color:var(--muted);font-family:var(--mono);text-transform:uppercase;letter-spacing:.1em;margin-bottom:6px">Median Nominal</div><div style="font-family:var(--mono);font-size:1.15rem;font-weight:500;color:var(--gold)" id="wNomMed">—</div><div style="font-size:.62rem;color:var(--muted);margin-top:4px">per year</div></div>
+        <div style="background:var(--surface2);padding:16px 18px"><div style="font-size:.65rem;color:var(--muted);font-family:var(--mono);text-transform:uppercase;letter-spacing:.1em;margin-bottom:6px">Median Real</div><div style="font-family:var(--mono);font-size:1.15rem;font-weight:500;color:var(--blue)" id="wRealMed">—</div><div style="font-size:.62rem;color:var(--muted);margin-top:4px">per year · today's $</div></div>
+        <div style="background:var(--surface2);padding:16px 18px"><div style="font-size:.65rem;color:var(--muted);font-family:var(--mono);text-transform:uppercase;letter-spacing:.1em;margin-bottom:6px">10th %ile Real</div><div style="font-family:var(--mono);font-size:1.15rem;font-weight:500;color:var(--red)" id="wReal10">—</div><div style="font-size:.62rem;color:var(--muted);margin-top:4px">per year · today's $</div></div>
+        <div style="background:var(--surface2);padding:16px 18px"><div style="font-size:.65rem;color:var(--muted);font-family:var(--mono);text-transform:uppercase;letter-spacing:.1em;margin-bottom:6px">90th %ile Real</div><div style="font-family:var(--mono);font-size:1.15rem;font-weight:500;color:var(--green)" id="wReal90">—</div><div style="font-size:.62rem;color:var(--muted);margin-top:4px">per year · today's $</div></div>
+        <div style="background:var(--surface2);padding:16px 18px"><div style="font-size:.65rem;color:var(--muted);font-family:var(--mono);text-transform:uppercase;letter-spacing:.1em;margin-bottom:6px">Monthly Real</div><div style="font-family:var(--mono);font-size:1.15rem;font-weight:500;color:var(--purple)" id="wRealMonth">—</div><div style="font-size:.62rem;color:var(--muted);margin-top:4px">per month · today's $</div></div>
+      </div>
+      <div style="margin-top:12px;padding:10px 14px;background:var(--surface2);border-radius:6px;border-left:3px solid var(--blue);font-size:.7rem;color:var(--muted);font-family:var(--sans);line-height:1.55">
+        ℹ The 4% rule (Bengen 1994) suggests withdrawing 4% of your portfolio in year 1, then adjusting for inflation each year — historically lasting 30+ years.
+      </div>
+    </div>
+
+    <p class="sec-hdr" id="probHdr">Probability of Reaching Target by End Year</p>
+    <div class="prob-grid" id="probGrid"></div>
+
+    <div class="full">
+      <div class="panel">
+        <div class="p-title">Simulation Fan Chart</div>
+        <div class="p-sub" id="fanSub">—</div>
+        <div class="glide-indicator" id="glideIndicator">
+          <div class="gi-label">⟳ Glide Path Active — Volatility Tapering</div>
+          <div class="gi-bar"></div>
+          <div class="gi-marks"><span id="giStart">—</span><span style="color:var(--teal)">σ tapering →</span><span id="giEnd">—</span></div>
+        </div>
+        <canvas id="fanChart" height="300"></canvas>
+      </div>
+    </div>
+
+    <button class="stress-toggle" id="stressToggle" onclick="toggleStress()">
+      <span style="font-size:1.2rem">⚡</span>
+      <span>Stress Testing &amp; Glide Path</span>
+      <span style="font-size:.72rem;color:var(--muted)">Late Bear · Sequence-of-Returns · Volatility Taper</span>
+      <span class="arrow">▼</span>
+    </button>
+
+    <div class="stress-panel" id="stressPanel">
+      <div class="stress-section">
+        <div class="stress-section-title">🐻 Late Bear Stress Test</div>
+        <div class="stress-section-sub">Forces the final N years of every path to a fixed crash return. Tests sequence-of-returns risk.</div>
+        <div class="slider-group">
+          <div class="slider-label"><span>Bear Years at End</span><span class="slider-val" id="bearYearsVal">3 years</span></div>
+          <input type="range" class="slider red" id="bearYears" min="1" max="10" value="3" oninput="document.getElementById('bearYearsVal').textContent=this.value+' year'+(this.value==1?'':'s')">
+        </div>
+        <div class="slider-group">
+          <div class="slider-label"><span>Forced Annual Return</span><span class="slider-val" id="bearReturnVal">−30%</span></div>
+          <input type="range" class="slider red" id="bearReturn" min="-50" max="-10" value="-30" oninput="document.getElementById('bearReturnVal').textContent=(this.value>0?'+':'')+this.value+'%'">
+        </div>
+        <button class="run-btn" style="background:var(--red);color:#fff;margin-top:4px" onclick="runStressTest()">▶ Run Stress Test</button>
+        <div class="stress-results" id="stressResults" style="display:none">
+          <div class="stress-card"><div class="sc-label">Normal Simulation</div><div class="sc-row"><span class="sc-key">Median</span><span class="sc-v" id="stNormMed">—</span></div><div class="sc-row"><span class="sc-key">10th %ile</span><span class="sc-v" id="stNormP10">—</span></div><div class="sc-row"><span class="sc-key">90th %ile</span><span class="sc-v" id="stNormP90">—</span></div></div>
+          <div class="stress-card warn"><div class="sc-label" style="color:var(--red)">Late Bear Stressed</div><div class="sc-row"><span class="sc-key">Median</span><span class="sc-v" id="stStressMed">—</span><span class="sc-delta neg" id="stMedDelta">—</span></div><div class="sc-row"><span class="sc-key">10th %ile</span><span class="sc-v" id="stStressP10">—</span><span class="sc-delta neg" id="stP10Delta">—</span></div><div class="sc-row"><span class="sc-key">90th %ile</span><span class="sc-v" id="stStressP90">—</span><span class="sc-delta neg" id="stP90Delta">—</span></div></div>
+          <div class="stress-card" style="border-color:rgba(64,217,192,.2)"><div class="sc-label" style="color:var(--teal)">What It Means</div><div style="font-size:.75rem;color:var(--muted);font-family:var(--sans);line-height:1.6" id="stInsight">—</div></div>
+        </div>
+      </div>
+
+      <div class="stress-section">
+        <div class="stress-section-title">📉 Glide Path Mode</div>
+        <div class="stress-section-sub">Tapers volatility σ linearly from full-equity levels toward bond-like levels near retirement.</div>
+        <div class="toggle-row">
+          <label class="toggle-switch"><input type="checkbox" id="glideEnabled" onchange="toggleGlide()"><span class="toggle-slider"></span></label>
+          <span class="toggle-label" id="glideToggleLabel">Glide Path Disabled</span>
+        </div>
+        <div id="glideControls" style="display:none">
+          <div class="slider-group"><div class="slider-label"><span>Starting Volatility σ</span><span class="slider-val" id="glideStartSigmaVal">16%</span></div><input type="range" class="slider gold" id="glideStartSigma" min="5" max="30" value="16" oninput="document.getElementById('glideStartSigmaVal').textContent=this.value+'%';updateGlideIndicator()"></div>
+          <div class="slider-group"><div class="slider-label"><span>Ending Volatility σ</span><span class="slider-val" id="glideEndSigmaVal">6%</span></div><input type="range" class="slider gold" id="glideEndSigma" min="2" max="20" value="6" oninput="document.getElementById('glideEndSigmaVal').textContent=this.value+'%';updateGlideIndicator()"></div>
+          <div class="slider-group"><div class="slider-label"><span>Ending Return μ (bond drift)</span><span class="slider-val" id="glideEndMuVal">2.5%</span></div><input type="range" class="slider gold" id="glideEndMu" min="0" max="8" step="0.5" value="2.5" oninput="document.getElementById('glideEndMuVal').textContent=this.value+'%'"></div>
+          <button class="run-btn" style="background:var(--teal);color:#0c0f14" onclick="rebuildAndRender()">↻ Re-run with Glide Path</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="two">
+      <div class="panel"><div class="p-title">End-Year Outcome Distribution</div><div class="p-sub">Histogram of ending portfolio values</div><canvas id="histChart" height="260"></canvas></div>
+      <div class="panel"><div class="p-title">Scenario Comparison</div><div class="p-sub">Median end-year value — all forecasts side by side</div><canvas id="cmpChart" height="260"></canvas></div>
+    </div>
+
+    <div class="two">
+      <div class="panel">
+        <div class="p-title">US Stock Market Annual Returns</div>
+        <div class="p-sub">S&amp;P 500 historical performance — context for scenario assumptions</div>
+        <div class="hist-grid" id="histGrid"></div>
+      </div>
+      <div class="panel">
+        <div class="p-title">Simulation Summary</div>
+        <div class="p-sub">Your current inputs</div>
+        <div class="c-row"><span class="c-lbl">Starting balance</span><span class="c-val" id="sumStart" style="color:var(--gold)">$8,492.71</span></div>
+        <div class="c-row"><span class="c-lbl">Annual contribution</span><span class="c-val" id="sumContrib">$7,500.00</span></div>
+        <div class="c-row"><span class="c-lbl">Weekly equivalent</span><span class="c-val" id="sumWeekly">~$144.23/wk</span></div>
+        <div class="c-row"><span class="c-lbl">Time horizon</span><span class="c-val" id="sumYears">25 years (2026–2050)</span></div>
+        <div class="c-total"><span>Total contributions</span><span class="c-val" id="sumTotal">$187,500</span></div>
+        <table class="cmp-tbl">
+          <thead><tr><th>Forecast Source</th><th>Horizon</th><th>US Equity μ</th></tr></thead>
+          <tbody>
+            <tr><td style="color:var(--red)">Vanguard VCMM</td><td>5–10 yr</td><td>4.0%–5.0%</td></tr>
+            <tr><td style="color:var(--gold)">Fidelity CMA</td><td>20 yr</td><td>5.8% nominal</td></tr>
+            <tr><td style="color:var(--blue)">BlackRock</td><td>10 yr</td><td>~5.2%</td></tr>
+            <tr><td style="color:var(--green)">Vanguard 30yr</td><td>30 yr</td><td>4.4%–6.4%</td></tr>
+            <tr><td style="color:var(--purple)">Historical avg</td><td>Long-run</td><td>~8.0%</td></tr>
+          </tbody>
+        </table>
+      </div>
     </div>
   </div>
-
-  <p class="sec-hdr" id="probHdr">Probability of Reaching Target by End Year</p>
-  <div class="prob-grid" id="probGrid"></div>
-
-  <div class="full">
-    <div class="panel">
-      <div class="p-title">Simulation Fan Chart</div>
-      <div class="p-sub" id="fanSub">—</div>
-      <canvas id="fanChart" height="300"></canvas>
-    </div>
-  </div>
-
-  <div class="two">
-    <div class="panel">
-      <div class="p-title">End-Year Outcome Distribution</div>
-      <div class="p-sub">Histogram of ending portfolio values</div>
-      <canvas id="histChart" height="260"></canvas>
-    </div>
-    <div class="panel">
-      <div class="p-title">Scenario Comparison</div>
-      <div class="p-sub">Median end-year value — all forecasts side by side</div>
-      <canvas id="cmpChart" height="260"></canvas>
-    </div>
-  </div>
-
-  <div class="two">
-    <div class="panel">
-      <div class="p-title">US Stock Market Annual Returns</div>
-      <div class="p-sub">S&amp;P 500 historical performance — context for scenario assumptions</div>
-      <div class="hist-grid" id="histGrid"></div>
-    </div>
-    <div class="panel">
-      <div class="p-title">Simulation Summary</div>
-      <div class="p-sub">Your current inputs</div>
-      <div class="c-row"><span class="c-lbl">Starting balance</span><span class="c-val" id="sumStart" style="color:var(--gold)">$8,492.71</span></div>
-      <div class="c-row"><span class="c-lbl">Annual contribution</span><span class="c-val" id="sumContrib">$7,500.00</span></div>
-      <div class="c-row"><span class="c-lbl">Weekly equivalent</span><span class="c-val" id="sumWeekly">~$144.23/wk</span></div>
-      <div class="c-row"><span class="c-lbl">Time horizon</span><span class="c-val" id="sumYears">25 years (2026–2050)</span></div>
-      <div class="c-total"><span>Total contributions</span><span class="c-val" id="sumTotal">$187,500</span></div>
-      <table class="cmp-tbl">
-        <thead><tr><th>Forecast Source</th><th>Horizon</th><th>US Equity μ</th></tr></thead>
-        <tbody>
-          <tr><td style="color:var(--red)">Vanguard VCMM</td><td>5–10 yr</td><td>4.0%–5.0%</td></tr>
-          <tr><td style="color:var(--gold)">Fidelity CMA</td><td>20 yr</td><td>5.8% nominal</td></tr>
-          <tr><td style="color:var(--blue)">BlackRock</td><td>10 yr</td><td>~5.2%</td></tr>
-          <tr><td style="color:var(--green)">Vanguard 30yr</td><td>30 yr</td><td>4.4%–6.4%</td></tr>
-          <tr><td style="color:var(--purple)">Historical avg</td><td>Long-run</td><td>~8.0%</td></tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
-
-</div><!-- /.wrap -->
+</div>
 
 <script>
-// ── Scenarios ────────────────────────────────────────────────────────────────
-const SCNS = [
-  {name:'Bear',      label:'BEAR', mu:.045, sigma:.17, color:'#ff8a7e', src:'Vanguard base case',    note:'Vanguard VCMM (Dec 2025): muted 4–5% annualized due to stretched large-cap tech valuations', bootstrap:false},
-  {name:'Base',      label:'BASE', mu:.058, sigma:.16, color:'#e8c97e', src:'Fidelity 20yr CMA',     note:'Fidelity 20-year capital markets assumption: 5.8% nominal US equity return (2025–2044 horizon)', bootstrap:false},
-  {name:'Bull',      label:'BULL', mu:.080, sigma:.15, color:'#7eeac9', src:'Historical 30yr avg',   note:'Long-run US total market historical average ~8%; consistent with Vanguard 30-year upper range of 6.4%', bootstrap:false},
-  {name:'Optimistic',label:'OPT',  mu:.100, sigma:.17, color:'#c878ff', src:'Top-decile forecast',   note:'Optimistic scenario: 10% annualized — above consensus but within historical possibility for a strong decade', bootstrap:false},
-  {name:'Bootstrap', label:'HIST', mu:null, sigma:null, color:'#f0a060', src:'S&P 500 1928–2025',   note:'Bootstrap resampling from 97 years of actual S&P 500 returns (1928–2025). Each path draws random historical years — no normal distribution assumed. Captures real fat tails and crash sequences.', bootstrap:true},
+const SP500_FULL=[43.81,-8.30,53.99,-3.16,-47.07,-15.15,-28.48,52.95,57.35,-5.94,46.74,41.89,-9.78,-11.59,44.02,19.03,30.45,-10.67,-12.43,20.34,25.76,19.40,36.44,-8.19,52.62,31.56,6.56,-10.78,43.36,11.96,0.47,26.64,-8.81,22.68,16.48,12.45,-9.97,23.80,11.06,-8.50,4.01,14.31,18.98,-14.31,-25.90,37.00,23.84,-7.18,6.51,18.52,32.42,-4.70,20.42,22.34,6.15,31.73,18.67,5.25,16.54,31.48,-3.10,30.35,7.53,9.97,1.33,37.20,22.68,33.10,28.34,21.04,-9.10,-11.85,-22.10,28.36,10.74,4.83,15.61,5.48,-36.55,25.94,14.82,2.10,15.89,32.15,13.48,1.38,11.77,21.61,-4.38,31.49,18.40,28.71,-18.11,26.29,25.02,16.80].map(r=>r/100);
+const SP500_RECENT=[-9.10,-11.85,-22.10,28.36,10.74,4.83,15.61,5.48,-36.55,25.94,14.82,2.10,15.89,32.15,13.48,1.38,11.77,21.61,-4.38,31.49,18.40,28.71,-18.11,26.29,25.02,16.80].map(r=>r/100);
+const HISTORY=[{yr:'2016',r:11.96},{yr:'2017',r:21.83},{yr:'2018',r:-4.38},{yr:'2019',r:31.49},{yr:'2020',r:18.40},{yr:'2021',r:28.71},{yr:'2022',r:-18.11},{yr:'2023',r:26.29},{yr:'2024',r:25.02},{yr:'2025',r:16.80}];
+const SCNS=[
+  {name:'Bear',label:'BEAR',mu:.045,sigma:.17,color:'#ff8a7e',src:'Vanguard base case',note:'Vanguard VCMM (Dec 2025): muted 4–5% annualized due to stretched large-cap tech valuations',bootstrap:false,returns:null},
+  {name:'Base',label:'BASE',mu:.058,sigma:.16,color:'#e8c97e',src:'Fidelity 20yr CMA',note:'Fidelity 20-year capital markets assumption: 5.8% nominal US equity return (2025–2044 horizon)',bootstrap:false,returns:null},
+  {name:'Bull',label:'BULL',mu:.080,sigma:.15,color:'#7eeac9',src:'Historical 30yr avg',note:'Long-run US total market historical average ~8%; consistent with Vanguard 30-year upper range of 6.4%',bootstrap:false,returns:null},
+  {name:'Optimistic',label:'OPT',mu:.100,sigma:.17,color:'#c878ff',src:'Top-decile forecast',note:'Optimistic scenario: 10% annualized — above consensus but within historical possibility for a strong decade',bootstrap:false,returns:null},
+  {name:'Bootstrap',label:'HIST',mu:null,sigma:null,color:'#f0a060',src:'S&P 1928–2025',note:'Block bootstrap (blocks of 4) from 97 years of S&P 500 data. Preserves multi-year crash sequences.',bootstrap:true,returns:SP500_FULL},
+  {name:'Recent',label:'HIST-R',mu:null,sigma:null,color:'#40d9c0',src:'S&P 2000–2025',note:'Block bootstrap from 2000–2025. Includes dot-com bust, 2008 GFC, COVID crash, and 2022 rate-shock bear.',bootstrap:true,returns:SP500_RECENT},
 ];
 
-// ── S&P 500 annual returns 1928–2025 (nominal, price return + dividends) ─────
-const SP500 = [
-  43.81,-8.30,53.99,-3.16,-47.07,-15.15,-28.48,52.95,57.35,-5.94,
-  46.74,41.89,-9.78,-11.59,44.02,19.03,30.45,-10.67,-12.43,20.34,
-  25.76,19.40,36.44,-8.19,52.62,31.56,6.56,-10.78,43.36,11.96,
-  0.47,26.64,-8.81,22.68,16.48,12.45,-9.97,23.80,11.06,-8.50,
-  4.01,14.31,18.98,-14.31,-25.90,37.00,23.84,-7.18,6.51,18.52,
-  32.42,-4.70,20.42,22.34,6.15,31.73,18.67,5.25,16.54,31.48,
-  -3.10,30.35,7.53,9.97,1.33,37.20,22.68,33.10,28.34,21.04,
-  -9.10,-11.85,-22.10,28.36,10.74,4.83,15.61,5.48,-36.55,25.94,
-  14.82,2.10,15.89,32.15,13.48,1.38,11.77,21.61,-4.38,31.49,
-  18.40,28.71,-18.11,26.29,25.02,16.80
-].map(r => r / 100);
+let currentMode=null;
 
-// ── Recent history for display ────────────────────────────────────────────────
-const HISTORY = [
-  {yr:'2016',r:11.96},{yr:'2017',r:21.83},{yr:'2018',r:-4.38},{yr:'2019',r:31.49},
-  {yr:'2020',r:18.40},{yr:'2021',r:28.71},{yr:'2022',r:-18.11},{yr:'2023',r:26.29},
-  {yr:'2024',r:25.02},{yr:'2025',r:16.80},
-];
+function selectMode(mode){
+  currentMode=mode;
+  document.getElementById('modePicker').style.display='none';
+  document.getElementById('mainWrap').classList.add('visible');
+  const label=mode==='beginner'?'🌱 Just Starting Out':'📈 Advanced Mode';
+  document.getElementById('modeBarLabel').innerHTML=`Mode: <strong>${label}</strong>`;
 
-// ── Mutable settings ──────────────────────────────────────────────────────────
-let N = 10000, START = 8492.71, CONTRIB = 7500, START_YEAR = 2026, YEARS = 25;
-let INFLATION = 0.029, SWR = 0.04;
-let YRS = Array.from({length: YEARS}, (_, i) => START_YEAR + i);
-let ALL = [], MEDIANS = [], activeIdx = 1;
-let fanInst = null, histInst = null, cmpInst = null;
-
-// ── Settings helpers ──────────────────────────────────────────────────────────
-const num = (id, fallback) => {
-  const el = document.getElementById(id);
-  const v = el.value.trim();
-  if (v === '') return fallback;
-  const n = parseFloat(v);
-  return Number.isNaN(n) ? fallback : n;
-};
-
-function updateTotal() {
-  const roth = Math.max(0, num('inpRoth', 0));
-  const k401 = Math.max(0, num('inp401k', 0));
-  const taxable = Math.max(0, num('inpTaxable', 0));
-  const other = Math.max(0, num('inpOther', 0));
-  const total = roth + k401 + taxable + other;
-
-  document.getElementById('totalContribDisplay').textContent =
-    '$' + total.toLocaleString('en-US', { minimumFractionDigits: 0 });
+  if(mode==='beginner'){
+    document.getElementById('beginnerUI').classList.add('visible');
+    document.getElementById('advancedUI').classList.remove('visible');
+  }else{
+    document.getElementById('advancedUI').classList.add('visible');
+    document.getElementById('beginnerUI').classList.remove('visible');
+    if(ALL.length===0){
+      document.getElementById('bInflation').textContent=(INFLATION*100).toFixed(1)+'%/yr';
+      updateTotal();
+      rebuildAndRender();
+    }
+  }
+  window.scrollTo(0,0);
 }
 
-function toggleSettings() {
-  document.getElementById('settingsToggle').classList.toggle('open');
-  document.getElementById('settingsPanel').classList.toggle('open');
+function returnToPicker(){
+  document.getElementById('mainWrap').classList.remove('visible');
+  document.getElementById('modePicker').style.display='flex';
+  currentMode=null;
 }
 
-function applySettings() {
-  START = Math.max(0, num('inpStart', 8492.71));
+let begChartInst=null;
+const BEG_MU=0.058, BEG_SIGMA=0.16, BEG_INFLATION=0.029, BEG_N=10000;
 
-  START_YEAR = Math.max(2024, Math.floor(num('inpStartYear', 2026)));
-  const endYr = Math.min(2070, Math.max(START_YEAR + 1, Math.floor(num('inpEndYear', 2050))));
-document.getElementById('inpStartYear').value = START_YEAR;
-document.getElementById('inpEndYear').value = endYr;
-  const roth = Math.max(0, num('inpRoth', 0));
-  const k401 = Math.max(0, num('inp401k', 0));
-  const taxable = Math.max(0, num('inpTaxable', 0));
-  const other = Math.max(0, num('inpOther', 0));
-
-  CONTRIB = roth + k401 + taxable + other;
-  INFLATION = Math.max(0, num('inpInflation', 2.9)) / 100;
-  SWR = Math.max(0, num('inpSWR', 4.0)) / 100;
-
-  YEARS = Math.max(2, endYr - START_YEAR + 1);
-  YRS = Array.from({ length: YEARS }, (_, i) => START_YEAR + i);
-
-  document.getElementById('hdrVal').textContent =
-    '$' + START.toLocaleString('en-US', {
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2
-    });
-
-  document.getElementById('hdrSub').textContent =
-    `$${CONTRIB.toLocaleString()}/yr · Monte Carlo 10,000 paths · ${START_YEAR}–${endYr} · Starting $${START.toLocaleString('en-US', {
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2
-    })}`;
-
-  document.getElementById('bContrib').textContent =
-    '$' + CONTRIB.toLocaleString() + '/yr';
-
-  document.getElementById('bInflation').textContent =
-    (INFLATION * 100).toFixed(1) + '%/yr';
-
-  document.getElementById('outcomeHdr').textContent =
-    `Projected Outcomes by ${endYr}`;
-
-  document.getElementById('probHdr').textContent =
-    `Probability of Reaching Target by ${endYr}`;
-
-  document.getElementById('sumStart').textContent =
-    '$' + START.toLocaleString('en-US', { minimumFractionDigits: 2 });
-
-  document.getElementById('sumContrib').textContent =
-    '$' + CONTRIB.toLocaleString('en-US', { minimumFractionDigits: 2 });
-
-  document.getElementById('sumWeekly').textContent =
-    '~$' + (CONTRIB / 52).toFixed(2) + '/wk';
-
-  document.getElementById('sumYears').textContent =
-    `${YEARS} years (${START_YEAR}–${endYr})`;
-
-  document.getElementById('sumTotal').textContent =
-    '$' + (CONTRIB * YEARS).toLocaleString();
-document.getElementById('sumTotal').textContent =
-  '$' + (CONTRIB * YEARS).toLocaleString();
-
-updateTotal();
-rebuildAndRender();
-toggleSettings();
-}
-
-// ── PRNG (seeded) ─────────────────────────────────────────────────────────────
-function mkRand(seed) {
-  return () => {
-    seed |= 0;
-    seed = seed + 0x6D2B79F5 | 0;
-    let t = Math.imul(seed ^ seed >>> 15, 1 | seed);
-    t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
-    return ((t ^ t >>> 14) >>> 0) / 4294967296;
+function mkRandBeg(seed){
+  return()=>{
+    seed|=0;
+    seed=seed+0x6D2B79F5|0;
+    let t=Math.imul(seed^seed>>>15,1|seed);
+    t=t+Math.imul(t^t>>>7,61|t)^t;
+    return((t^t>>>14)>>>0)/4294967296;
   };
 }
 
-// ── Normal distribution simulation ───────────────────────────────────────────
-function simulate(mu, sigma) {
-  const rand = mkRand(42);
-  const res  = Array.from({length: YEARS}, () => new Float64Array(N));
-  for (let s = 0; s < N; s++) {
-    let v = START;
-    for (let y = 0; y < YEARS; y++) {
-      const u1 = rand() || 1e-10, u2 = rand();
-      const z  = Math.sqrt(-2 * Math.log(u1)) * Math.cos(2 * Math.PI * u2);
-      v = Math.max(v * (1 + mu + sigma * z) + CONTRIB, 0);
-      res[y][s] = v;
+function runBeginner(){
+  const savings=parseFloat(document.getElementById('begSavings').value)||0;
+  const contrib=parseFloat(document.getElementById('begContrib').value)||0;
+  const years=parseInt(document.getElementById('begYears').value)||30;
+
+  const rand=mkRandBeg(42);
+  const pathData={p10:[],p50:[],p90:[]};
+  const ends=[];
+  const allYearData=Array.from({length:years},()=>[]);
+
+  for(let s=0;s<BEG_N;s++){
+    let v=savings;
+    for(let y=0;y<years;y++){
+      const u1=rand()||1e-10,u2=rand();
+      const z=Math.sqrt(-2*Math.log(u1))*Math.cos(2*Math.PI*u2);
+      v=Math.max(v*(1+BEG_MU+BEG_SIGMA*z)+contrib,0);
+      allYearData[y].push(v);
+    }
+    ends.push(v);
+  }
+
+  for(let y=0;y<years;y++){
+    const sorted=allYearData[y].slice().sort((a,b)=>a-b);
+    const p=q=>sorted[Math.floor(q/100*(sorted.length-1))];
+    pathData.p10.push(p(10));
+    pathData.p50.push(p(50));
+    pathData.p90.push(p(90));
+  }
+
+  ends.sort((a,b)=>a-b);
+  const p10=ends[Math.floor(BEG_N*0.10)];
+  const p50=ends[Math.floor(BEG_N*0.50)];
+  const p90=ends[Math.floor(BEG_N*0.90)];
+
+  const inflFactor=Math.pow(1+BEG_INFLATION,years);
+  const realP50=p50/inflFactor;
+  const monthly=(realP50*0.04)/12;
+
+  document.getElementById('begP10').textContent=fmt(p10);
+  document.getElementById('begP50').textContent=fmt(p50);
+  document.getElementById('begP90').textContent=fmt(p90);
+  document.getElementById('begMonthly').textContent=fmt(monthly)+'/mo';
+
+  const totalContrib=contrib*years;
+  const sentence=`If you invest <strong>$${contrib.toLocaleString()}/year</strong> for <strong>${years} years</strong> starting with <strong>$${savings.toLocaleString()}</strong>, you'll contribute <strong>$${totalContrib.toLocaleString()}</strong> total. In a typical market, your portfolio would most likely grow to around <strong>${fmt(p50)}</strong> — enough to generate roughly <strong>${fmt(realP50*0.04)}/year</strong> in today's dollars using the 4% rule.`;
+  document.getElementById('begSentence').innerHTML=sentence;
+
+  const labels=Array.from({length:years},(_,i)=>`Year ${i+1}`);
+  if(begChartInst) begChartInst.destroy();
+  begChartInst=new Chart(document.getElementById('begChart'),{
+    type:'line',
+    data:{
+      labels,
+      datasets:[
+        {label:'Good years',data:pathData.p90,fill:'+2',borderColor:'transparent',backgroundColor:'rgba(126,234,201,0.12)',pointRadius:0,tension:.4},
+        {label:'Most likely',data:pathData.p50,fill:false,borderColor:'#e8c97e',borderWidth:2.5,pointRadius:0,tension:.4},
+        {label:'Tough years',data:pathData.p10,fill:false,borderColor:'rgba(255,138,126,0.5)',borderWidth:1.5,borderDash:[4,4],pointRadius:0,tension:.4},
+      ]
+    },
+    options:{
+      responsive:true,
+      interaction:{mode:'index',intersect:false},
+      plugins:{
+        legend:{labels:{color:'#6b7588',font:{family:"'DM Mono',monospace",size:11}}},
+        tooltip:{callbacks:{label:ctx=>`${ctx.dataset.label}: ${fmt(ctx.parsed.y)}`}}
+      },
+      scales:{
+        x:{grid:{color:'rgba(35,43,56,0.8)'},ticks:{color:'#6b7588',maxTicksLimit:8,font:{family:"'DM Mono',monospace",size:10}}},
+        y:{grid:{color:'rgba(35,43,56,0.8)'},ticks:{color:'#6b7588',callback:v=>'$'+fmtS(v),font:{family:"'DM Mono',monospace",size:10}}}
+      }
+    }
+  });
+
+  document.getElementById('begResults').classList.add('show');
+  document.getElementById('begResults').scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+let N=10000, START=8492.71, CONTRIB=7500, START_YEAR=2026, YEARS=25;
+let INFLATION=0.029, SWR=0.04;
+let YRS=Array.from({length:YEARS},(_,i)=>START_YEAR+i);
+let ALL=[], MEDIANS=[], activeIdx=1;
+let fanInst=null, histInst=null, cmpInst=null;
+
+function numVal(id,fallback){
+  const raw=document.getElementById(id).value.trim();
+  if(raw==='') return fallback;
+  const p=parseFloat(raw);
+  return isNaN(p)?fallback:p;
+}
+function updateTotal(){
+  const t=numVal('inpRoth',0)+numVal('inp401k',0)+numVal('inpTaxable',0)+numVal('inpOther',0);
+  document.getElementById('totalContribDisplay').textContent='$'+t.toLocaleString('en-US',{minimumFractionDigits:0});
+}
+function toggleSettings(){
+  document.getElementById('settingsToggle').classList.toggle('open');
+  document.getElementById('settingsPanel').classList.toggle('open');
+}
+function toggleStress(){
+  document.getElementById('stressToggle').classList.toggle('open');
+  document.getElementById('stressPanel').classList.toggle('open');
+}
+function toggleGlide(){
+  const e=document.getElementById('glideEnabled').checked;
+  document.getElementById('glideControls').style.display=e?'block':'none';
+  document.getElementById('glideToggleLabel').textContent=e?'Glide Path Enabled':'Glide Path Disabled';
+  updateGlideIndicator();
+  rebuildAndRender();
+}
+function updateGlideIndicator(){
+  const e=document.getElementById('glideEnabled').checked,ind=document.getElementById('glideIndicator');
+  if(e){
+    ind.classList.add('show');
+    document.getElementById('giStart').textContent='σ='+document.getElementById('glideStartSigma').value+'% (today)';
+    document.getElementById('giEnd').textContent='σ='+document.getElementById('glideEndSigma').value+'% (retirement)';
+  }else{
+    ind.classList.remove('show');
+  }
+}
+
+function applySettings(){
+  START=numVal('inpStart',0);
+  START_YEAR=Math.round(numVal('inpStartYear',2026));
+  const endYr=Math.round(numVal('inpEndYear',2050));
+  CONTRIB=numVal('inpRoth',0)+numVal('inp401k',0)+numVal('inpTaxable',0)+numVal('inpOther',0);
+  INFLATION=numVal('inpInflation',2.9)/100;
+  SWR=numVal('inpSWR',4.0)/100;
+  YEARS=Math.max(2,endYr-START_YEAR+1);
+  YRS=Array.from({length:YEARS},(_,i)=>START_YEAR+i);
+
+  document.getElementById('hdrVal').textContent='$'+START.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
+  document.getElementById('hdrSub').textContent=`$${CONTRIB.toLocaleString()}/yr · Monte Carlo 10,000 paths · ${START_YEAR}–${endYr} · Starting $${START.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})}`;
+  document.getElementById('bContrib').textContent='$'+CONTRIB.toLocaleString()+'/yr';
+  document.getElementById('bInflation').textContent=(INFLATION*100).toFixed(1)+'%/yr';
+  document.getElementById('outcomeHdr').textContent=`Projected Outcomes by ${endYr}`;
+  document.getElementById('probHdr').textContent=`Probability of Reaching Target by ${endYr}`;
+  document.getElementById('sumStart').textContent='$'+START.toLocaleString('en-US',{minimumFractionDigits:2});
+  document.getElementById('sumContrib').textContent='$'+CONTRIB.toLocaleString('en-US',{minimumFractionDigits:2});
+  document.getElementById('sumWeekly').textContent='~$'+(CONTRIB/52).toFixed(2)+'/wk';
+  document.getElementById('sumYears').textContent=`${YEARS} years (${START_YEAR}–${endYr})`;
+  document.getElementById('sumTotal').textContent='$'+(CONTRIB*YEARS).toLocaleString();
+
+  rebuildAndRender();
+  toggleSettings();
+}
+
+function mkRand(seed){
+  return()=>{
+    seed|=0;
+    seed=seed+0x6D2B79F5|0;
+    let t=Math.imul(seed^seed>>>15,1|seed);
+    t=t+Math.imul(t^t>>>7,61|t)^t;
+    return((t^t>>>14)>>>0)/4294967296;
+  };
+}
+
+function simulate(mu,sigma){
+  const glideOn=document.getElementById('glideEnabled').checked;
+  const sigStart=glideOn?parseInt(document.getElementById('glideStartSigma').value)/100:sigma;
+  const sigEnd=glideOn?parseInt(document.getElementById('glideEndSigma').value)/100:sigma;
+  const muEnd=glideOn?parseFloat(document.getElementById('glideEndMu').value)/100:mu;
+  const rand=mkRand(42);
+  const res=Array.from({length:YEARS},()=>new Float64Array(N));
+  for(let s=0;s<N;s++){
+    let v=START;
+    for(let y=0;y<YEARS;y++){
+      const t=YEARS>1?y/(YEARS-1):0;
+      const sig=sigStart+(sigEnd-sigStart)*t;
+      const muY=mu+(muEnd-mu)*t;
+      const u1=rand()||1e-10,u2=rand();
+      const z=Math.sqrt(-2*Math.log(u1))*Math.cos(2*Math.PI*u2);
+      v=Math.max(v*(1+muY+sig*z)+CONTRIB,0);
+      res[y][s]=v;
     }
   }
   return res;
 }
 
-// ── Bootstrap simulation ──────────────────────────────────────────────────────
-function simulateBootstrap() {
-  const rand = mkRand(84);
-  const res = Array.from({ length: YEARS }, () => new Float64Array(N));
-
-  for (let s = 0; s < N; s++) {
-    let v = START;
-    for (let y = 0; y < YEARS; y++) {
-      const r = SP500[Math.floor(rand() * SP500.length)];
-      v = Math.max(v * (1 + r) + CONTRIB, 0);
-      res[y][s] = v;
+function simulateBlockBootstrap(returns,blockSize=4){
+  const rand=mkRand(84+returns.length),n=returns.length;
+  const res=Array.from({length:YEARS},()=>new Float64Array(N));
+  for(let s=0;s<N;s++){
+    let v=START,y=0;
+    while(y<YEARS){
+      const start=Math.floor(rand()*n);
+      for(let b=0;b<blockSize&&y<YEARS;b++,y++){
+        const r=returns[(start+b)%n];
+        v=Math.max(v*(1+r)+CONTRIB,0);
+        res[y][s]=v;
+      }
     }
   }
-
   return res;
 }
 
-
-// ── Percentile helper ─────────────────────────────────────────────────────────
-function pct(arr, p) {
-  const s  = Float64Array.from(arr).sort();
-  const i  = (p / 100) * (s.length - 1);
-  const lo = Math.floor(i), hi = Math.ceil(i);
-  return s[lo] + (s[hi] - s[lo]) * (i - lo);
+function simulateLateBear(baseRes,bearYears,bearReturn){
+  const res=Array.from({length:YEARS},()=>new Float64Array(N));
+  const rand=mkRand(99);
+  const S=SCNS[activeIdx];
+  for(let s=0;s<N;s++){
+    let v=START;
+    for(let y=0;y<YEARS;y++){
+      const isBearYear=y>=YEARS-bearYears;
+      let r;
+      if(isBearYear){
+        r=bearReturn;
+      }else if(S.bootstrap){
+        r=S.returns[Math.floor(rand()*S.returns.length)];
+      }else{
+        const u1=rand()||1e-10,u2=rand();
+        const z=Math.sqrt(-2*Math.log(u1))*Math.cos(2*Math.PI*u2);
+        r=S.mu+S.sigma*z;
+      }
+      v=Math.max(v*(1+r)+CONTRIB,0);
+      res[y][s]=v;
+    }
+  }
+  return res;
 }
 
-const fmt  = v => v >= 1e6 ? '$' + (v / 1e6).toFixed(2) + 'M' : '$' + Math.round(v).toLocaleString();
-const fmtS = v => v >= 1e6 ? (v / 1e6).toFixed(2) + 'M' : '$' + (v / 1000).toFixed(0) + 'k';
+function runStressTest(){
+  const bearYears=parseInt(document.getElementById('bearYears').value);
+  const bearReturn=parseInt(document.getElementById('bearReturn').value)/100;
+  const normalRes=ALL[activeIdx];
+  const stressRes=simulateLateBear(normalRes,bearYears,bearReturn);
+  const normEnd=normalRes[YEARS-1],stressEnd=stressRes[YEARS-1];
+  const nMed=pct(normEnd,50),nP10=pct(normEnd,10),nP90=pct(normEnd,90);
+  const sMed=pct(stressEnd,50),sP10=pct(stressEnd,10),sP90=pct(stressEnd,90);
 
-Chart.defaults.color       = '#6b7588';
-Chart.defaults.font.family = "'DM Mono',monospace";
-Chart.defaults.font.size   = 11;
-const GRID = 'rgba(35,43,56,0.8)';
+  document.getElementById('stNormMed').textContent=fmt(nMed);
+  document.getElementById('stNormP10').textContent=fmt(nP10);
+  document.getElementById('stNormP90').textContent=fmt(nP90);
+  document.getElementById('stStressMed').textContent=fmt(sMed);
+  document.getElementById('stStressP10').textContent=fmt(sP10);
+  document.getElementById('stStressP90').textContent=fmt(sP90);
 
-// ── Build static UI elements ──────────────────────────────────────────────────
-const bar = document.getElementById('scnBar');
-SCNS.forEach((s, i) => {
-  const btn = document.createElement('button');
-  btn.className = 'scn-btn' + (i === 1 ? ' active' : '');
-  const retLabel = s.bootstrap ? 'Actual' : (s.mu * 100).toFixed(2) + '%';
-  // FIX: template literals with backticks
-  btn.innerHTML = `
-    <div class="scn-name">${s.label}</div>
-    <div class="scn-ret" style="color:${s.color}">${retLabel}</div>
-    <div class="scn-src">${s.src}</div>
-    <div class="scn-dot" style="background:${s.color}"></div>
-  `;
-  btn.onclick = () => render(i);
+  const medDelta=((sMed-nMed)/nMed*100).toFixed(1);
+  const p10Delta=((sP10-nP10)/nP10*100).toFixed(1);
+  const p90Delta=((sP90-nP90)/nP90*100).toFixed(1);
+
+  document.getElementById('stMedDelta').textContent=medDelta+'%';
+  document.getElementById('stP10Delta').textContent=p10Delta+'%';
+  document.getElementById('stP90Delta').textContent=p90Delta+'%';
+
+  const drop=Math.abs(parseFloat(medDelta));
+  let insight=drop>60
+    ? `Severe impact. A ${bearYears}-year bear near retirement cuts median outcomes by ${drop.toFixed(0)}%. This is the core sequence-of-returns risk.`
+    : drop>30
+    ? `Significant impact. The late bear reduces median outcomes by ${drop.toFixed(0)}%. Consider a cash buffer or bond ladder for the 3–5 years before retirement.`
+    : `Moderate impact (${drop.toFixed(0)}% median reduction). Your accumulation runway is providing some cushion.`;
+
+  document.getElementById('stInsight').textContent=insight;
+  document.getElementById('stressResults').style.display='grid';
+}
+
+function pct(arr,p){
+  const s=Float64Array.from(arr).sort();
+  const i=(p/100)*(s.length-1);
+  const lo=Math.floor(i),hi=Math.ceil(i);
+  return s[lo]+(s[hi]-s[lo])*(i-lo);
+}
+const fmt=v=>v>=1e6?'$'+(v/1e6).toFixed(2)+'M':'$'+Math.round(v).toLocaleString();
+const fmtS=v=>v>=1e6?(v/1e6).toFixed(2)+'M':'$'+(v/1000).toFixed(0)+'k';
+
+Chart.defaults.color='#6b7588';
+Chart.defaults.font.family="'DM Mono',monospace";
+Chart.defaults.font.size=11;
+const GRID='rgba(35,43,56,0.8)';
+
+const bar=document.getElementById('scnBar');
+SCNS.forEach((s,i)=>{
+  const btn=document.createElement('button');
+  btn.className='scn-btn'+(i===1?' active':'');
+  const retLabel=s.bootstrap?'Actual':(s.mu*100).toFixed(2)+'%';
+  btn.innerHTML=`<div class="scn-name">${s.label}</div><div class="scn-ret" style="color:${s.color}">${retLabel}</div><div class="scn-src">${s.src}</div><div class="scn-dot" style="background:${s.color}"></div>`;
+  btn.onclick=()=>render(i);
   bar.appendChild(btn);
 });
 
-const hg = document.getElementById('histGrid');
-HISTORY.forEach(d => {
-  const c = document.createElement('div');
-  c.className = 'yr-card';
-  // FIX: template literals with backticks
-  c.innerHTML = `<div class="yr-lbl">${d.yr}</div><div class="yr-val ${d.r >= 0 ? 'pos' : 'neg'}">${d.r >= 0 ? '+' : ''}${d.r.toFixed(1)}%</div>`;
+const hg=document.getElementById('histGrid');
+HISTORY.forEach(d=>{
+  const c=document.createElement('div');
+  c.className='yr-card';
+  c.innerHTML=`<div class="yr-lbl">${d.yr}</div><div class="yr-val ${d.r>=0?'pos':'neg'}">${d.r>=0?'+':''}${d.r.toFixed(1)}%</div>`;
   hg.appendChild(c);
 });
 
-// ── Comparison chart ──────────────────────────────────────────────────────────
-function buildCmpChart() {
-  if (cmpInst) cmpInst.destroy();
-  cmpInst = new Chart(document.getElementById('cmpChart'), {
-    type: 'bar',
-    data: {
-      labels: SCNS.map(s => s.name),
-      datasets: [{
-        label: 'Median',
-        data: MEDIANS,
-        backgroundColor: SCNS.map(s => s.color + '99'),
-        borderColor: SCNS.map(s => s.color),
-        borderWidth: 1.5,
-        borderRadius: 5,
+function buildCmpChart(){
+  if(cmpInst) cmpInst.destroy();
+  cmpInst=new Chart(document.getElementById('cmpChart'),{
+    type:'bar',
+    data:{
+      labels:SCNS.map(s=>s.name),
+      datasets:[{
+        label:'Median',
+        data:MEDIANS,
+        backgroundColor:SCNS.map(s=>s.color+'99'),
+        borderColor:SCNS.map(s=>s.color),
+        borderWidth:1.5,
+        borderRadius:5
       }]
     },
-    options: {
-      responsive: true,
-      plugins: {
-        legend: {display: false},
-        tooltip: {callbacks: {label: ctx => 'Median: ' + fmt(ctx.parsed.y)}}
+    options:{
+      responsive:true,
+      plugins:{
+        legend:{display:false},
+        tooltip:{callbacks:{label:ctx=>'Median: '+fmt(ctx.parsed.y)}}
       },
-      scales: {
-        x: {grid: {display: false}},
-        y: {grid: {color: GRID}, ticks: {callback: v => '$' + fmtS(v)}}
+      scales:{
+        x:{grid:{display:false}},
+        y:{grid:{color:GRID},ticks:{callback:v=>'$'+fmtS(v)}}
       }
     }
   });
 }
 
-// ── Rebuild all simulations then re-render ────────────────────────────────────
-function rebuildAndRender() {
-  ALL     = SCNS.map(s => s.bootstrap ? simulateBootstrap() : simulate(s.mu, s.sigma));
-  MEDIANS = ALL.map(r => pct(r[YEARS - 1], 50));
+function rebuildAndRender(){
+  ALL=SCNS.map(s=>s.bootstrap?simulateBlockBootstrap(s.returns,4):simulate(s.mu,s.sigma));
+  MEDIANS=ALL.map(r=>pct(r[YEARS-1],50));
   buildCmpChart();
   render(activeIdx);
+  document.getElementById('stressResults').style.display='none';
 }
 
-// ── Main render ───────────────────────────────────────────────────────────────
-function render(idx) {
-  activeIdx = idx;
-  document.querySelectorAll('.scn-btn').forEach((b, i) => b.classList.toggle('active', i === idx));
+function render(idx){
+  activeIdx=idx;
+  document.querySelectorAll('.scn-btn').forEach((b,i)=>b.classList.toggle('active',i===idx));
+  const S=SCNS[idx],res=ALL[idx],end=res[YEARS-1];
 
-  const S = SCNS[idx], res = ALL[idx], end = res[YEARS - 1];
+  document.getElementById('bScen').textContent=S.name;
+  document.getElementById('bRet').textContent=S.bootstrap?'Block bootstrap resampled':((S.mu||0)*100).toFixed(2)+'% annualized';
+  document.getElementById('bVol').textContent=S.bootstrap?'Historical (block bootstrap)':((S.sigma||0)*100).toFixed(0)+'%';
+  document.getElementById('bNote').textContent=S.note;
+  document.getElementById('fanSub').textContent=S.bootstrap
+    ? `${S.name} · Block bootstrap (block=4) · ${S.src} · ${START_YEAR}–${START_YEAR+YEARS-1}`
+    : `${S.name} · μ=${((S.mu||0)*100).toFixed(2)}%, σ=${((S.sigma||0)*100).toFixed(0)}% · ${START_YEAR}–${START_YEAR+YEARS-1}`;
 
-  document.getElementById('bScen').textContent = S.name;
-  document.getElementById('bRet').textContent  = S.bootstrap
-    ? 'Resampled from 1928–2025'
-    : (S.mu * 100).toFixed(2) + '% annualized';
-  document.getElementById('bVol').textContent  = S.bootstrap ? 'Historical' : (S.sigma * 100).toFixed(0) + '%';
-  document.getElementById('bNote').textContent = S.note;
-  // FIX: template literals with backticks
-  document.getElementById('fanSub').textContent = S.bootstrap
-    ? `Bootstrap · S&P 500 actual returns 1928–2025 · ${START_YEAR}–${START_YEAR + YEARS - 1}`
-    : `${S.name} · μ=${(S.mu * 100).toFixed(2)}%, σ=${(S.sigma * 100).toFixed(0)}% · ${START_YEAR}–${START_YEAR + YEARS - 1}`;
+  if(!S.bootstrap&&S.sigma!=null){
+    document.getElementById('glideStartSigma').value=Math.round(S.sigma*100);
+    document.getElementById('glideStartSigmaVal').textContent=Math.round(S.sigma*100)+'%';
+  }
+  updateGlideIndicator();
 
-  const mean = Array.from(end).reduce((a, b) => a + b, 0) / N;
-  const p10  = pct(end, 10), p25 = pct(end, 25), p50 = pct(end, 50);
-  const p75  = pct(end, 75), p90 = pct(end, 90);
+  const mean=Array.from(end).reduce((a,b)=>a+b,0)/N;
+  const p10=pct(end,10),p25=pct(end,25),p50=pct(end,50),p75=pct(end,75),p90=pct(end,90);
 
-  document.getElementById('sMean').textContent = fmt(mean);
-  document.getElementById('sP50').textContent  = fmt(p50);
-  document.getElementById('sP10').textContent  = fmt(p10);
-  document.getElementById('sP25').textContent  = fmt(p25);
-  document.getElementById('sP75').textContent  = fmt(p75);
-  document.getElementById('sP90').textContent  = fmt(p90);
+  document.getElementById('sMean').textContent=fmt(mean);
+  document.getElementById('sP50').textContent=fmt(p50);
+  document.getElementById('sP10').textContent=fmt(p10);
+  document.getElementById('sP25').textContent=fmt(p25);
+  document.getElementById('sP75').textContent=fmt(p75);
+  document.getElementById('sP90').textContent=fmt(p90);
 
-  // ── Inflation-adjusted real values ──────────────────────────────────────────
-  const inflFactor = Math.pow(1 + INFLATION, YEARS);
-  const toReal = v => v / inflFactor;
-  const rp10 = toReal(p10), rp25 = toReal(p25), rp50 = toReal(p50);
-  const rp75 = toReal(p75), rp90 = toReal(p90);
+  const inflFactor=Math.pow(1+INFLATION,YEARS),toReal=v=>v/inflFactor;
+  const rp10=toReal(p10),rp25=toReal(p25),rp50=toReal(p50),rp75=toReal(p75),rp90=toReal(p90);
 
-  document.getElementById('rP50').textContent    = fmt(rp50);
-  document.getElementById('rP10').textContent    = fmt(rp10);
-  document.getElementById('rP25').textContent    = fmt(rp25);
-  document.getElementById('rP75').textContent    = fmt(rp75);
-  document.getElementById('rP90').textContent    = fmt(rp90);
-  document.getElementById('rFactor').textContent = inflFactor.toFixed(2) + '×';
-  document.getElementById('realHdr').textContent =
-    `Inflation-Adjusted (Real) Values · Today's Dollars · ${(INFLATION*100).toFixed(1)}%/yr`;
+  document.getElementById('rP50').textContent=fmt(rp50);
+  document.getElementById('rP10').textContent=fmt(rp10);
+  document.getElementById('rP25').textContent=fmt(rp25);
+  document.getElementById('rP75').textContent=fmt(rp75);
+  document.getElementById('rP90').textContent=fmt(rp90);
+  document.getElementById('rFactor').textContent=inflFactor.toFixed(2)+'×';
+  document.getElementById('realHdr').textContent=`Inflation-Adjusted (Real) Values · Today's Dollars · ${(INFLATION*100).toFixed(1)}%/yr`;
 
-  // ── Withdrawal capacity ──────────────────────────────────────────────────────
-  const swrPct = (SWR * 100).toFixed(1);
-  document.getElementById('swrSubLabel').textContent = `Based on ${swrPct}% safe withdrawal rate`;
-  document.getElementById('wNomMed').textContent   = fmt(p50 * SWR) + '/yr';
-  document.getElementById('wRealMed').textContent  = fmt(rp50 * SWR) + '/yr';
-  document.getElementById('wReal10').textContent   = fmt(rp10 * SWR) + '/yr';
-  document.getElementById('wReal90').textContent   = fmt(rp90 * SWR) + '/yr';
-  document.getElementById('wRealMonth').textContent= fmt(rp50 * SWR / 12) + '/mo';
+  const swrPct=(SWR*100).toFixed(1);
+  document.getElementById('swrSubLabel').textContent=`Based on ${swrPct}% safe withdrawal rate`;
+  document.getElementById('wNomMed').textContent=fmt(p50*SWR)+'/yr';
+  document.getElementById('wRealMed').textContent=fmt(rp50*SWR)+'/yr';
+  document.getElementById('wReal10').textContent=fmt(rp10*SWR)+'/yr';
+  document.getElementById('wReal90').textContent=fmt(rp90*SWR)+'/yr';
+  document.getElementById('wRealMonth').textContent=fmt(rp50*SWR/12)+'/mo';
 
-  // Probability cards
-  const TGTS = [{l:'$100k',v:1e5},{l:'$250k',v:2.5e5},{l:'$500k',v:5e5},{l:'$1M',v:1e6},{l:'$2M',v:2e6},{l:'$3M',v:3e6},{l:'$5M',v:5e6},{l:'$10M',v:1e7}];
-  const COLS  = ['#7eeac9','#6eb5ff','#e8c97e','#c878ff','#ff8a7e','#f0a060','#a78bfa','#38bdf8'];
-  const pg    = document.getElementById('probGrid');
-  pg.innerHTML = '';
-  TGTS.forEach((t, i) => {
-    const prob = Array.from(end).filter(v => v >= t.v).length / N * 100;
-    const card = document.createElement('div');
-    card.className = 'prob-card';
-    card.style.setProperty('--w', prob.toFixed(1) + '%');
-    card.style.setProperty('--c', COLS[i]);
-    // FIX: template literals with backticks
-    card.innerHTML = `<div class="p-tgt">${t.l}+</div><div class="p-pct" style="color:${COLS[i]}">${prob.toFixed(1)}<span>%</span></div>`;
+  const TGTS=[{l:'$100k',v:1e5},{l:'$250k',v:2.5e5},{l:'$500k',v:5e5},{l:'$1M',v:1e6},{l:'$2M',v:2e6},{l:'$3M',v:3e6},{l:'$5M',v:5e6},{l:'$10M',v:1e7}];
+  const COLS=['#7eeac9','#6eb5ff','#e8c97e','#c878ff','#ff8a7e','#f0a060','#a78bfa','#38bdf8'];
+  const pg=document.getElementById('probGrid');
+  pg.innerHTML='';
+  TGTS.forEach((t,i)=>{
+    const prob=Array.from(end).filter(v=>v>=t.v).length/N*100;
+    const card=document.createElement('div');
+    card.className='prob-card';
+    card.style.setProperty('--w',prob.toFixed(1)+'%');
+    card.style.setProperty('--c',COLS[i]);
+    card.innerHTML=`<div class="p-tgt">${t.l}+</div><div class="p-pct" style="color:${COLS[i]}">${prob.toFixed(1)}<span>%</span></div>`;
     pg.appendChild(card);
   });
 
-  // Fan chart percentile paths
-  const paths = {p10:[], p20:[], p50:[], p80:[], p90:[]};
-  for (let y = 0; y < YEARS; y++) {
-    paths.p10.push(pct(res[y], 10));
-    paths.p20.push(pct(res[y], 20));
-    paths.p50.push(pct(res[y], 50));
-    paths.p80.push(pct(res[y], 80));
-    paths.p90.push(pct(res[y], 90));
+  const paths={p10:[],p20:[],p50:[],p80:[],p90:[]};
+  for(let y=0;y<YEARS;y++){
+    paths.p10.push(pct(res[y],10));
+    paths.p20.push(pct(res[y],20));
+    paths.p50.push(pct(res[y],50));
+    paths.p80.push(pct(res[y],80));
+    paths.p90.push(pct(res[y],90));
   }
 
-  if (fanInst) fanInst.destroy();
-  fanInst = new Chart(document.getElementById('fanChart'), {
-    type: 'line',
-    data: {
-      labels: YRS,
-      datasets: [
-        {label:'10–90 band', data:paths.p90, fill:'+3', borderColor:'transparent', backgroundColor:S.color+'1a', pointRadius:0, tension:.4},
-        {label:'20–80 band', data:paths.p80, fill:'+1', borderColor:'transparent', backgroundColor:S.color+'2e', pointRadius:0, tension:.4},
-        {label:'Median',     data:paths.p50, fill:false, borderColor:S.color,       borderWidth:2.5, pointRadius:0, tension:.4},
-        {label:'20th',       data:paths.p20, fill:false, borderColor:'transparent', pointRadius:0, tension:.4},
-        {label:'10th %ile',  data:paths.p10, fill:false, borderColor:S.color+'80',  borderWidth:1.5, borderDash:[4,4], pointRadius:0, tension:.4},
-        {label:'90th %ile',  data:paths.p90, fill:false, borderColor:S.color+'80',  borderWidth:1.5, borderDash:[4,4], pointRadius:0, tension:.4},
+  if(fanInst) fanInst.destroy();
+  fanInst=new Chart(document.getElementById('fanChart'),{
+    type:'line',
+    data:{
+      labels:YRS,
+      datasets:[
+        {label:'10–90 band',data:paths.p90,fill:'+3',borderColor:'transparent',backgroundColor:S.color+'1a',pointRadius:0,tension:.4},
+        {label:'20–80 band',data:paths.p80,fill:'+1',borderColor:'transparent',backgroundColor:S.color+'2e',pointRadius:0,tension:.4},
+        {label:'Median',data:paths.p50,fill:false,borderColor:S.color,borderWidth:2.5,pointRadius:0,tension:.4},
+        {label:'20th',data:paths.p20,fill:false,borderColor:'transparent',pointRadius:0,tension:.4},
+        {label:'10th %ile',data:paths.p10,fill:false,borderColor:S.color+'80',borderWidth:1.5,borderDash:[4,4],pointRadius:0,tension:.4},
+        {label:'90th %ile',data:paths.p90,fill:false,borderColor:S.color+'80',borderWidth:1.5,borderDash:[4,4],pointRadius:0,tension:.4}
       ]
     },
-    options: {
-      responsive: true,
-      interaction: {mode:'index', intersect:false},
-      plugins: {
-        legend: {labels: {filter: item => ['Median','10th %ile','90th %ile'].includes(item.text)}},
-        // FIX: template literal with backtick
-        tooltip: {callbacks: {label: ctx => `${ctx.dataset.label}: ${fmt(ctx.parsed.y)}`}}
+    options:{
+      responsive:true,
+      interaction:{mode:'index',intersect:false},
+      plugins:{
+        legend:{labels:{filter:item=>['Median','10th %ile','90th %ile'].includes(item.text)}},
+        tooltip:{callbacks:{label:ctx=>`${ctx.dataset.label}: ${fmt(ctx.parsed.y)}`}}
       },
-      scales: {
-        x: {grid:{color:GRID}, ticks:{maxTicksLimit:10}},
-        y: {grid:{color:GRID}, ticks:{callback: v => '$' + fmtS(v)}}
+      scales:{
+        x:{grid:{color:GRID},ticks:{maxTicksLimit:10}},
+        y:{grid:{color:GRID},ticks:{callback:v=>'$'+fmtS(v)}}
       }
     }
   });
 
-  // Histogram
-  const vals = Array.from(end);
-  // FIX: spread operator uses ... (three dots), not … (ellipsis character)
-  const minV = Math.min(...vals), maxV = Math.max(...vals);
-  const BINS = 50, bw = (maxV - minV) / BINS;
-  const counts = new Array(BINS).fill(0);
-  vals.forEach(v => {
-    let b = Math.floor((v - minV) / bw);
-    if (b >= BINS) b = BINS - 1;
-    counts[b]++;
-  });
-  const bLbls = counts.map((_, i) => '$' + fmtS(minV + (i + .5) * bw));
-  const bCol  = counts.map((_, i) => {
-    const v = minV + (i + .5) * bw;
-    return v < p25 ? '#6eb5ff99' : v < p50 ? S.color + '99' : v < p75 ? '#7eeac999' : '#c878ff99';
+  const vals=Array.from(end),minV=Math.min(...vals),maxV=Math.max(...vals),BINS=50,bw=(maxV-minV)/BINS;
+  const counts=new Array(BINS).fill(0);
+  vals.forEach(v=>{let b=Math.floor((v-minV)/bw);if(b>=BINS)b=BINS-1;counts[b]++;});
+  const bLbls=counts.map((_,i)=>'$'+fmtS(minV+(i+.5)*bw));
+  const bCol=counts.map((_,i)=>{
+    const v=minV+(i+.5)*bw;
+    return v<p25?'#6eb5ff99':v<p50?S.color+'99':v<p75?'#7eeac999':'#c878ff99';
   });
 
-  if (histInst) histInst.destroy();
-  histInst = new Chart(document.getElementById('histChart'), {
-    type: 'bar',
-    data: {labels: bLbls, datasets: [{data: counts, backgroundColor: bCol, borderWidth: 0, borderRadius: 2}]},
-    options: {
-      responsive: true,
-      plugins: {
-        legend: {display: false},
-        tooltip: {callbacks: {
-          title:  items => bLbls[items[0].dataIndex],
-          // FIX: template literal with backtick
-          label:  ctx   => `${ctx.parsed.y} simulations`
-        }}
+  if(histInst) histInst.destroy();
+  histInst=new Chart(document.getElementById('histChart'),{
+    type:'bar',
+    data:{labels:bLbls,datasets:[{data:counts,backgroundColor:bCol,borderWidth:0,borderRadius:2}]},
+    options:{
+      responsive:true,
+      plugins:{
+        legend:{display:false},
+        tooltip:{callbacks:{title:items=>bLbls[items[0].dataIndex],label:ctx=>`${ctx.parsed.y} simulations`}}
       },
-      scales: {
-        x: {grid:{display:false}, ticks:{maxTicksLimit:7, maxRotation:30}},
-        y: {grid:{color:GRID}, title:{display:true, text:'Simulations', color:'#6b7588'}}
+      scales:{
+        x:{grid:{display:false},ticks:{maxTicksLimit:7,maxRotation:30}},
+        y:{grid:{color:GRID},title:{display:true,text:'Simulations',color:'#6b7588'}}
       }
     }
   });
 }
-
-// ── Init ──────────────────────────────────────────────────────────────────────
-document.getElementById('bInflation').textContent = (INFLATION * 100).toFixed(1) + '%/yr';
-rebuildAndRender();
 </script>
 
-<!-- FLOATING DONATE FAB -->
 <div class="donate-fab" id="donateFab">
   <div class="donate-panel" id="donatePanel">
     <p>If this tool helps you, you can support its continued development.<br><span style="font-size:.72rem;color:var(--muted);font-family:var(--mono)">All support helps cover hosting and future improvements.</span></p>
     <div class="donate-links">
-      <a href="https://buymeacoffee.com/datainfamous40" target="_blank" rel="noopener" class="donate-link bmac">
-        <span class="d-icon">☕</span> Buy Me a Coffee
-      </a>
-      <a href="https://paypal.me/BenjamynWilson" target="_blank" rel="noopener" class="donate-link paypal">
-        <span class="d-icon">🅿</span> PayPal.me
-      </a>
-      <a href="https://cash.app/$BenjamynmWilson" target="_blank" rel="noopener" class="donate-link cashapp">
-        <span class="d-icon">$</span> Cash App
-      </a>
+      <a href="https://buymeacoffee.com/datainfamous40" target="_blank" rel="noopener" class="donate-link bmac"><span class="d-icon">☕</span> Buy Me a Coffee</a>
+      <a href="https://paypal.me/BenjamynWilson" target="_blank" rel="noopener" class="donate-link paypal"><span class="d-icon">🅿</span> PayPal.me</a>
+      <a href="https://cash.app/$BenjamynmWilson" target="_blank" rel="noopener" class="donate-link cashapp"><span class="d-icon">$</span> Cash App</a>
     </div>
   </div>
-  <button class="fb-trigger" onclick="openFeedback()">
-    💬 Suggest a Feature
-  </button>
-  <button class="donate-toggle" id="donateToggle" onclick="toggleDonate()">
-    ❤ Support this tool
-  </button>
+  <button class="fb-trigger" onclick="openFeedback()">💬 Suggest a Feature</button>
+  <button class="donate-toggle" id="donateToggle" onclick="toggleDonate()">❤ Support this tool</button>
 </div>
 <script>
-function toggleDonate(){
-  const p = document.getElementById('donatePanel');
-  p.classList.toggle('show');
-}
-document.addEventListener('click', function(e){
-  const fab = document.getElementById('donateFab');
+function toggleDonate(){document.getElementById('donatePanel').classList.toggle('show')}
+document.addEventListener('click',function(e){
+  const fab=document.getElementById('donateFab');
   if(!fab.contains(e.target)) document.getElementById('donatePanel').classList.remove('show');
 });
 </script>
 
-
-<!-- FEEDBACK MODAL -->
 <div class="fb-overlay" id="fbOverlay" onclick="overlayClick(event)">
   <div class="fb-modal" id="fbModal">
     <button class="fb-close" onclick="closeFeedback()">✕</button>
-
-    <!-- Form view -->
     <div id="fbForm">
       <div class="fb-title">Share Your <em>Feedback</em></div>
       <div class="fb-sub">RetireCast · Help us improve · Takes 60 seconds</div>
-
       <form id="feedbackForm" action="https://formspree.io/f/xdawwaey" method="POST" onsubmit="submitFeedback(event)">
-
-        <div class="fb-group">
-          <label class="fb-label">Name <span style="color:var(--muted);font-size:.6rem">(optional)</span></label>
-          <input class="fb-input" type="text" name="name" placeholder="Your name">
-        </div>
-
-        <div class="fb-group">
-          <label class="fb-label">Category</label>
-          <select class="fb-select" name="category" required>
-            <option value="" disabled selected>Select a category…</option>
-            <option value="Feature Request">🚀 Feature Request</option>
-            <option value="Bug Report">🐛 Bug Report</option>
-            <option value="Data / Accuracy">📊 Data or Accuracy Issue</option>
-            <option value="UI / Design">🎨 UI / Design Feedback</option>
-            <option value="General Feedback">💬 General Feedback</option>
-            <option value="Other">✨ Other</option>
-          </select>
-        </div>
-
-        <div class="fb-group">
-          <label class="fb-label">Your Suggestion</label>
-          <textarea class="fb-textarea" name="message" placeholder="Describe your idea, issue, or feedback…" required></textarea>
-        </div>
-
-        <div class="fb-group">
-          <label class="fb-label">How useful is RetireCast? <span style="color:var(--muted);font-size:.6rem">(optional)</span></label>
-          <div class="fb-stars" id="starRow">
-            <span class="fb-star" data-v="1" onclick="setStars(1)">★</span>
-            <span class="fb-star" data-v="2" onclick="setStars(2)">★</span>
-            <span class="fb-star" data-v="3" onclick="setStars(3)">★</span>
-            <span class="fb-star" data-v="4" onclick="setStars(4)">★</span>
-            <span class="fb-star" data-v="5" onclick="setStars(5)">★</span>
-          </div>
-          <input type="hidden" name="rating" id="starInput" value="">
-        </div>
-
+        <div class="fb-group"><label class="fb-label">Name <span style="color:var(--muted);font-size:.6rem">(optional)</span></label><input class="fb-input" type="text" name="name" placeholder="Your name"></div>
+        <div class="fb-group"><label class="fb-label">Category</label><select class="fb-select" name="category" required><option value="" disabled selected>Select a category…</option><option value="Feature Request">🚀 Feature Request</option><option value="Bug Report">🐛 Bug Report</option><option value="Data / Accuracy">📊 Data or Accuracy Issue</option><option value="UI / Design">🎨 UI / Design Feedback</option><option value="General Feedback">💬 General Feedback</option><option value="Other">✨ Other</option></select></div>
+        <div class="fb-group"><label class="fb-label">Your Suggestion</label><textarea class="fb-textarea" name="message" placeholder="Describe your idea, issue, or feedback…" required></textarea></div>
+        <div class="fb-group"><label class="fb-label">How useful is RetireCast? <span style="color:var(--muted);font-size:.6rem">(optional)</span></label><div class="fb-stars" id="starRow"><span class="fb-star" data-v="1" onclick="setStars(1)">★</span><span class="fb-star" data-v="2" onclick="setStars(2)">★</span><span class="fb-star" data-v="3" onclick="setStars(3)">★</span><span class="fb-star" data-v="4" onclick="setStars(4)">★</span><span class="fb-star" data-v="5" onclick="setStars(5)">★</span></div><input type="hidden" name="rating" id="starInput" value=""></div>
         <button class="fb-submit" type="submit" id="fbSubmitBtn">▶ Send Feedback</button>
       </form>
     </div>
-
-    <!-- Success view -->
-    <div class="fb-success" id="fbSuccess">
-      <div class="check">✅</div>
-      <p><strong>Thanks for the feedback!</strong><br>Every suggestion helps make RetireCast better for everyone.<br><br>
-      <span style="color:var(--gold);font-family:var(--mono);font-size:.8rem">— The RetireCast Team</span></p>
-    </div>
+    <div class="fb-success" id="fbSuccess"><div class="check">✅</div><p><strong>Thanks for the feedback!</strong><br>Every suggestion helps make RetireCast better for everyone.<br><br><span style="color:var(--gold);font-family:var(--mono);font-size:.8rem">— The RetireCast Team</span></p></div>
   </div>
 </div>
-
 <script>
-function openFeedback(){
-  document.getElementById('fbOverlay').classList.add('open');
-  document.body.style.overflow='hidden';
-}
-function closeFeedback(){
-  document.getElementById('fbOverlay').classList.remove('open');
-  document.body.style.overflow='';
-}
-function overlayClick(e){
-  if(e.target===document.getElementById('fbOverlay')) closeFeedback();
-}
-document.addEventListener('keydown',e=>{ if(e.key==='Escape') closeFeedback(); });
-
-// Stars
-let starVal = 0;
+function openFeedback(){document.getElementById('fbOverlay').classList.add('open');document.body.style.overflow='hidden'}
+function closeFeedback(){document.getElementById('fbOverlay').classList.remove('open');document.body.style.overflow=''}
+function overlayClick(e){if(e.target===document.getElementById('fbOverlay'))closeFeedback()}
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeFeedback()});
+let starVal=0;
 function setStars(n){
-  starVal = n;
-  document.getElementById('starInput').value = n + ' / 5';
-  document.querySelectorAll('.fb-star').forEach(s=>{
-    s.classList.toggle('lit', parseInt(s.dataset.v) <= n);
-  });
+  starVal=n;
+  document.getElementById('starInput').value=n+' / 5';
+  document.querySelectorAll('.fb-star').forEach(s=>s.classList.toggle('lit',parseInt(s.dataset.v)<=n));
 }
 document.querySelectorAll('.fb-star').forEach(s=>{
   s.addEventListener('mouseenter',()=>{
     document.querySelectorAll('.fb-star').forEach(x=>{
-      x.style.color = parseInt(x.dataset.v) <= parseInt(s.dataset.v) ? 'var(--gold)' : 'var(--border)';
+      x.style.color=parseInt(x.dataset.v)<=parseInt(s.dataset.v)?'var(--gold)':'var(--border)';
     });
   });
   s.addEventListener('mouseleave',()=>{
     document.querySelectorAll('.fb-star').forEach(x=>{
-      x.style.color = parseInt(x.dataset.v) <= starVal ? 'var(--gold)' : 'var(--border)';
+      x.style.color=parseInt(x.dataset.v)<=starVal?'var(--gold)':'var(--border)';
     });
   });
 });
-
 async function submitFeedback(e){
   e.preventDefault();
-  const btn = document.getElementById('fbSubmitBtn');
-  btn.disabled = true;
-  btn.textContent = 'Sending…';
-  try {
-    const res = await fetch('https://formspree.io/f/xdawwaey', {
-      method: 'POST',
-      body: new FormData(e.target),
-      headers: {Accept: 'application/json'}
+  const btn=document.getElementById('fbSubmitBtn');
+  btn.disabled=true;
+  btn.textContent='Sending…';
+  try{
+    const res=await fetch('https://formspree.io/f/xdawwaey',{
+      method:'POST',
+      body:new FormData(e.target),
+      headers:{Accept:'application/json'}
     });
     if(res.ok){
-      document.getElementById('fbForm').style.display = 'none';
+      document.getElementById('fbForm').style.display='none';
       document.getElementById('fbSuccess').classList.add('show');
-      setTimeout(closeFeedback, 3200);
-    } else {
-      btn.disabled = false;
-      btn.textContent = '▶ Send Feedback';
+      setTimeout(closeFeedback,3200);
+    }else{
+      btn.disabled=false;
+      btn.textContent='▶ Send Feedback';
       alert('Something went wrong. Please try again.');
     }
-  } catch(err){
-    btn.disabled = false;
-    btn.textContent = '▶ Send Feedback';
+  }catch(err){
+    btn.disabled=false;
+    btn.textContent='▶ Send Feedback';
     alert('Network error. Please try again.');
   }
 }
 </script>
-
 </body>
 </html>
